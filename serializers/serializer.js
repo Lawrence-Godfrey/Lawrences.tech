@@ -1,16 +1,5 @@
-import {HydratedDocument, Model} from "mongoose";
-
 
 class Serializer {
-    private readonly _requestData: {};
-    private readonly _fields: {};
-    private readonly _model: Model<any, any, any, any, any>;
-
-    private readonly _fieldsToSave: string[]
-    private readonly _fieldsToReturn: string[]
-    private readonly _displayNames: {}
-    private _instance: HydratedDocument<any, any, any>;
-    private readonly _errors: {}
 
     /**
      * Set up the _instance with the data from the request,

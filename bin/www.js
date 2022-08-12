@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-import app from "../app";
-import connectDB from "../db/connect";
+import app from "../app.js";
+import connectDB from "../db/connect.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const port = process.env.PORT || 5000;
 
@@ -19,8 +21,6 @@ const start = async () => {
   }
 };
 
-start().then(
-    () => console.log(`Server is listening on port ${port}...`)
-);
+start();
 
 
