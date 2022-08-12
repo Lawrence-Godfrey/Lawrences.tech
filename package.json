@@ -1,0 +1,43 @@
+{
+  "name": "lawrences.tech",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/www.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "tsc and node bin/www.js",
+    "tsc": "tsc",
+    "client": "npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lawrence-Godfrey/Lawrences.tech"
+  },
+  "author": "Lawrence Godfrey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lawrence-Godfrey/Lawrences.tech/issues"
+  },
+  "homepage": "www.lawrences.tech",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/validator": "^13.7.5",
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^7.3.0",
+    "cookie": "^0.5.0",
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.19",
+    "typescript": "^4.7.4",
+    "validator": "^13.7.0"
+  }
+}
