@@ -1,73 +1,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import jwt = require('jsonwebtoken');
-import bcrypt = require('bcryptjs');
-
-
-export interface UserDoc extends mongoose.Document {
-    email: {
-        type: string;
-        unique: boolean;
-        required: boolean;
-    },
-    password: {
-        type: string;
-        required: boolean;
-    },
-    createdAt: {
-        type: Date;
-        default: Date;
-    },
-    updatedAt: {
-        type: Date;
-        default: Date;
-    },
-    isAdmin: {
-        type: boolean;
-        default: boolean;
-    },
-    isActive: {
-        type: boolean;
-        default: boolean;
-    },
-    firstName: {
-        type: string;
-        trim: boolean;
-        minlength: number;
-        maxlength: number;
-    },
-    lastName: {
-        type: string;
-        trim: boolean;
-        minlength: number;
-        maxlength: number;
-    },
-    location: {
-        type: string;
-        trim: boolean;
-        maxlength: number;
-        default: string;
-    },
-
-    /**
-     * Create a JWT token for the user.
-     * @memberof User
-     * @instance
-     * @method createJWT
-     * @returns {string} The JWT token
-     */
-    createJWT: () => string;
-
-    /**
-     * Verify that a password is correct for a User instance.
-     * @param {string} password    The password to verify.
-     * @memberof User
-     * @instance
-     * @method verifyPassword
-     * @returns {Promise<boolean>} True if the password is correct, false otherwise.
-     */
-    verifyPassword: (password: string) => Promise<boolean>;
-}
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 
 const UserSchema = new mongoose.Schema({
@@ -141,7 +75,13 @@ UserSchema.pre('save', async function () {
     }
 })
 
-
+/**
+ * Create a JWT token for the user.
+ * @memberof User
+ * @instance
+ * @method createJWT
+ * @returns {string} The JWT token
+ */
 UserSchema.methods.createJWT = function () {
     return jwt.sign(
         { userId: this._id },
@@ -150,10 +90,17 @@ UserSchema.methods.createJWT = function () {
     );
 }
 
-
+/**
+ * Verify that a password is correct for a User instance.
+ * @param {string} password    The password to verify.
+ * @memberof User
+ * @instance
+ * @method verifyPassword
+ * @returns {Promise<boolean>} True if the password is correct, false otherwise.
+ */
 UserSchema.methods.verifyPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
 
-export default mongoose.model<UserDoc>('User', UserSchema);
+export default mongoose.model('User', UserSchema);

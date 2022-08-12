@@ -5,11 +5,11 @@
   "main": "bin/www.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "tsc and node bin/www.js",
-    "tsc": "tsc",
+    "server": "nodemon bin/www --ignore client",
     "client": "npm start --prefix client",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Lawrence-Godfrey/Lawrences.tech"
@@ -21,9 +21,6 @@
   },
   "homepage": "www.lawrences.tech",
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
-    "@types/jsonwebtoken": "^8.5.8",
-    "@types/validator": "^13.7.5",
     "nodemon": "^2.0.16"
   },
   "dependencies": {
@@ -37,7 +34,6 @@
     "mongoose": "^6.5.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.19",
-    "typescript": "^4.7.4",
     "validator": "^13.7.0"
   }
 }
