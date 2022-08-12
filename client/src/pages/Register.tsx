@@ -14,20 +14,22 @@ const Register = () => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        console.log(e.currentTarget.elements)
+        const userDetails = {
+            username: e.currentTarget.username.value,
+            email: e.currentTarget.email.value,
+            password: e.currentTarget.password.value
+        }
+
         // Check that all the values that need to be submitted are present.
         // Only need to check the name if it's not a member, i.e., the
         // user is registering and not logging in.
-        // const { name, email, password } = e.currentTarget.elements
-        // if (!email || !password || !name) {
-        //     displayAlert()
-        //     clearAlert()
-        // }
-        //
-        // const currentUser = { name, email, password }
-        //
-        // registerUser(currentUser)
+        const { username, email, password } = userDetails;
+        if (!email || !password || !username) {
+            displayAlert()
+            clearAlert()
+        }
 
+        registerUser(userDetails)
     }
 
     // Navigate to the home page if the user object is not null.
@@ -77,7 +79,7 @@ const Register = () => {
                                 Email address
                             </label>
                             <input
-                                id="email-address"
+                                id="email"
                                 name="email"
                                 type="email"
                                 autoComplete="email"
@@ -122,9 +124,12 @@ const Register = () => {
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                             disabled={isLoading}
                         >
-                            <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                              <LockClosedIcon className="h-5 w-5 text-orange-500 group-hover:text-orange-400" aria-hidden="true" />
-                            </span>
+                            {isLoading &&
+                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <LockClosedIcon className="h-5 w-5 text-orange-500 group-hover:text-orange-400"
+                                                  aria-hidden="true"/>
+                                </span>
+                            }
                             Register
                         </button>
                     </div>
