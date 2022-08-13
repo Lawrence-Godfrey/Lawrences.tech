@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Logo, Alert } from "../components";
+import {Logo, Alert, UsernameField, PasswordField, EmailField} from "../components";
 import { useAppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
 import { LockClosedIcon } from '@heroicons/react/solid'
@@ -11,7 +11,7 @@ const Register = () => {
     // Global variables
     const { user, isLoading, showAlert, displayAlert, clearAlert, registerUser } = useAppContext()
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e) => {
         e.preventDefault()
 
         const userDetails = {
@@ -49,7 +49,7 @@ const Register = () => {
 
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Already have an account? {'  '}
-                        <a href="/login" className="font-medium text-orange-600 hover:text-orange-500">
+                        <a href="/Login.jsx" className="font-medium text-orange-600 hover:text-orange-500">
                             Sign In
                         </a>
                     </p>
@@ -60,48 +60,9 @@ const Register = () => {
                 <form className='mt-8 space-y-6' onSubmit={onSubmit}>
 
                     <div className="rounded-md shadow-sm -space-y-px">
-                        <div>
-                            <label htmlFor="username" className="sr-only">
-                                Username
-                            </label>
-                            <input
-                                id="username"
-                                name="username"
-                                type="username"
-                                autoComplete="username"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                                placeholder="Username"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="email-address" className="sr-only">
-                                Email address
-                            </label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-m-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                                placeholder="Email address"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="sr-only">
-                                Password
-                            </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                                placeholder="Password"
-                            />
-                        </div>
+                        <UsernameField roundingType="t" />
+                        <EmailField roundingType="m" />
+                        <PasswordField roundingType="b" />
                     </div>
 
                     <div className="flex items-center justify-between">

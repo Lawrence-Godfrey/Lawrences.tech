@@ -1,5 +1,5 @@
 import React, { useReducer, useContext } from "react";
-import reducer from "./reducer";
+import reducer from "./reducer.js";
 import Actions from "./actions";
 import axios from "axios";
 
