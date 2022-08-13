@@ -11,9 +11,9 @@ import UserSerializer from "../serializers/userSerializer.js";
  * @returns {Promise<*>}
  */
 const register = async (req, res, next) => {
-    const serializer = new UserSerializer(req.body);
+    const serializer = new UserSerializer({ data: req.body });
 
-    if (!serializer.isValid({})) {
+    if (!serializer.isValid()) {
         return res.status(400).json({
             status: 'error',
             message: 'Invalid data',
@@ -21,11 +21,11 @@ const register = async (req, res, next) => {
         });
     }
 
-    const user = await User.findOne({ $or: [{ email: req.data.email }, { username: req.data.username }] });
+    const user = await User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] });
     if (user) {
         return res.status(400).json({
             status: 'error',
-            message: 'User with this email already exists'
+            message: 'User with this email or username already exists'
         });
 
     } else {
@@ -49,7 +49,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const serializer = new UserSerializer(req.body);
 
-    if (!serializer.isValid({skipRequired: "name"})) {
+    if (!serializer.isValid()) {
         return res.status(400).json({
             status: 'error',
             message: 'Invalid data',
