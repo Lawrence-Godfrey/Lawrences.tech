@@ -10,9 +10,11 @@ class UserSerializer extends Serializer {
 
     /**
      * Set up the instance with the data from the request.
-     * @param requestData The request object
+     * @param options {Object} Object containing either the request data or a Use instance.
+     * @param options.data {Object} The request data.
+     * @param options.instance {mongoose.Document} The user instance.
      */
-    constructor(requestData) {
+    constructor(options) {
         const fields = {
             _id: {
                 readOnly: true,
@@ -38,7 +40,7 @@ class UserSerializer extends Serializer {
 
         const model = User;
 
-        super(requestData, fields, model);
+        super(options, fields, model);
     }
 
 }
