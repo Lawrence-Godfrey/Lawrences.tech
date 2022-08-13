@@ -1,8 +1,8 @@
 import Alert from './Alert';
-import Logo from './Logo';
-import UsernameField from './UsernameField';
+import Logo from './Logo.jsx';
+import UsernameField from './UsernameField.jsx';
 import EmailField from './EmailField';
-import PasswordField from './PasswordField';
+import PasswordField from './PasswordField.jsx';
 
 
 export {

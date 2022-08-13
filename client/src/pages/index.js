@@ -1,4 +1,4 @@
-import Error from './Error';
+import Error from './Error.jsx';
 import Register from './Register';
 import Login from './Login';
 

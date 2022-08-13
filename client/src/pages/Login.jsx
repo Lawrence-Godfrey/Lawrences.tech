@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Logo, Alert, UsernameField, PasswordField, EmailField } from "../components";
+import { Logo, Alert, UsernameField, PasswordField } from "../components";
 import { useAppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
 import { LockClosedIcon } from "@heroicons/react/solid";
@@ -13,18 +13,21 @@ const Login = () => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
+        const userDetails = {
+            username: e.currentTarget.username.value,
+            password: e.currentTarget.password.value
+        }
+
         // Check that all the values that need to be submitted are present.
         // Only need to check the name if it's not a member, i.e., the
         // user is registering and not logging in.
-        // const { name, email, password } = e.currentTarget.elements
-        // if (!email || !password || !name) {
-        //     displayAlert()
-        //     clearAlert()
-        // }
-        //
-        // const currentUser = { name, email, password }
-        //
-        // loginUser(currentUser)
+        const { username, password } = userDetails;
+        if (!password || !username) {
+            displayAlert()
+            clearAlert()
+        }
+
+        loginUser(userDetails)
     }
 
     // Navigate to the home page if the user object is not null.
@@ -44,7 +47,7 @@ const Login = () => {
 
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Don't have an account? {' '}
-                        <a href="/register" className="font-medium text-orange-600 hover:text-orange-500">
+                        <a href="/Register.jsx" className="font-medium text-orange-600 hover:text-orange-500">
                             Register
                         </a>
                     </p>
@@ -55,8 +58,8 @@ const Login = () => {
                     { showAlert && <Alert /> }
 
                     <div className="rounded-md shadow-sm -space-y-px">
-                        <UsernameField />
-                        <PasswordField />
+                        <UsernameField roundingType="t" />
+                        <PasswordField roundingType="b" />
                     </div>
 
                     <div className="flex items-center justify-between">
