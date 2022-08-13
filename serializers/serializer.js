@@ -2,25 +2,28 @@
 class Serializer {
 
     /**
-     * Set up the _instance with the data from the request,
+     * Set up the _instance with the data from the request or the instance
      * as well as the fields object and the model to save to or get data from.
-     * @param {Object} requestData     The request object
-     * @param {Object} fields           The fields to save to the _instance
-     * @param {Object} model           The model to save to or get data from
+     * @param {Object} options                        An object containing either the request data or a model instance.
+     * @param {Object} options.data                   The request data.
+     * @param {mongoose.Document} options.instance    The model instance.
+     * @param {Object} fields                          The fields to save to the _instance
+     * @param {Model} model                          The model to save to or get data from
      */
-    constructor(requestData, fields, model) {
+    constructor(options, fields, model) {
 
-        this._requestData = requestData;
+        this._data = options.data;
+        this._instance = options.instance;
         this._fields = fields;
         this._model = model;
 
         this._fieldsToSave = [];
         this._fieldsToReturn = [];
         this._displayNames = {};
-        this._instance = null;
         this._errors = {};
+        this._validated = false;
 
-        // Loop through the request data and only save the fields which are also in the fields object.
+        // Loop through the fields and set up the fieldsToSave, fieldsToReturn, and displayNames arrays.
         for (let key in this._fields) {
             if (this._fields[key]['readOnly'] && this._fields[key]['readOnly'] === true) {
                 this._fieldsToReturn.push(key);
@@ -28,11 +31,11 @@ class Serializer {
                     this._displayNames[key] = this._fields[key]['displayName'];
                 }
             } else if (this._fields[key]['writeOnly'] && this._fields[key]['writeOnly'] === true) {
-                if (this._requestData[key]) {
+                if (this._data && this._data[key]) {
                     this._fieldsToSave.push(key);
                 }
             } else {
-                if (this._requestData[key]) {
+                if (this._data && this._data[key]) {
                     this._fieldsToSave.push(key);
                 }
 
@@ -70,7 +73,7 @@ class Serializer {
     }
 
     get requestData() {
-        return this._requestData;
+        return this._data;
     }
 
     get model() {
@@ -112,7 +115,7 @@ class Serializer {
      * @returns {Object} validatedData   The validated fields to save
      */
     validatedData() {
-        return this.getSubset(this._requestData, this._fieldsToSave, this._displayNames);
+        return this.getSubset(this._data, this._fieldsToSave, this._displayNames);
     }
 
     /**
@@ -120,20 +123,30 @@ class Serializer {
      * @returns {Promise}
      */
     async save() {
-        if (this.isValid({})) {
-            try {
+        if (!this._validated)
+            throw new Error('Data is not valid.');
+
+        try {
+            if (this._instance) {
+                // Update the instance with the validated data.
+                for (let key of this._fieldsToSave) {
+                    this._instance[key] = this._data[key];
+                }
+                await this._instance.save();
+            } else {
                 this._instance = await this._model.create(this.validatedData());
-                return this._instance;
-            } catch (err) {
-                console.log(err);
-                return null;
             }
+            return this._instance;
+        } catch (err) {
+            console.log(err);
+            return null;
         }
     }
 
     /**
      * Get the data to return to the client from the instance.
-     * @returns {HydratedDocument} data   The data to return to the client
+     * @returns {Object} data   The data to return to the client
+     * @throws {Error}          If there is no instance.
      */
     data() {
         if (this._instance) {
@@ -146,27 +159,32 @@ class Serializer {
 
     /**
      * Return whether the data is valid or not.
-     * @param {Object} options    Options to use when validating.
-     *                            Can include 'skipRequired' to skip required fields.
+     * @param {Object} [options]                  Options to use when validating.
+     * @param {[string]} [options.skip]           Fields to skip when validating.
+     * @param {[string]} [options.skipRequired]   Fields skip if they are required and not present.
      * @returns {boolean}
      */
-    isValid(options) {
-        options = options || {};
-        let skipRequired = options['skipRequired'] || [];
-
-        this._instance = new this._model(this.validatedData());
-        const errors = this._instance.validateSync(["email", "password"]);
+    isValid({ skip=[], skipRequired=[]}={}) {
+        const instance = new this._model(this.validatedData());
+        const errors = instance.validateSync({ pathsToSkip: skip });
         if (errors) {
             // Loop through the error keys and get the message for each.
-            for (let key in errors.errors) {
-                this._errors[key] = { message: errors.errors[key].message };
+            for (let [key, value] of Object.entries(errors.errors)) {
+                if (skipRequired.includes(key) && value.kind === 'required') {
+                    continue;
+                }
+                this._errors[key] = { message: value.message };
             }
+        }
+
+        if (Object.keys(this._errors).length !== 0) {
+            this._validated = false;
             return false;
         } else {
+            this._validated = true;
             return true;
         }
     }
-
 }
 
 export default Serializer;
