@@ -4,6 +4,10 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 
+/**
+ * Model a User instance.
+ * @type {module:mongoose.Schema<any, Model<any, any, any, any>, {}, {}, {}, {}, DefaultTypeKey, {firstName: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], type: StringConstructor}, lastName: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], type: StringConstructor}, password: {minlength: (number|string)[], type: StringConstructor, required: (boolean|string)[]}, location: {trim: boolean, maxlength: (number|string)[], type: StringConstructor}, isAdmin: {default: boolean, type: BooleanConstructor}, isActive: {default: boolean, type: BooleanConstructor}, email: {unique: boolean, type: StringConstructor, required: (boolean|string)[], validate: {validator: any, message: string}}, username: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], unique: boolean, type: StringConstructor, required: (boolean|string)[]}}>}
+ */
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -26,14 +30,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A password is required'],
         minlength: [8, 'Password must be at least 8 characters']
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     },
     isAdmin: {
         type: Boolean,
@@ -58,9 +54,10 @@ const UserSchema = new mongoose.Schema({
     location: {
         type: String,
         trim: true,
-        maxlength: [50, 'Location must be at most 50 characters'],
-        default: 'No location specified'
+        maxlength: [50, 'Location must be at most 50 characters']
     }
+},{
+        timestamps: true
 });
 
 
