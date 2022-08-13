@@ -46,22 +46,23 @@ const register = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const login = async (req, res) => {
-    const { email, password } = req.body;
-    const serializer = new UserSerializer(req.body);
+    const { username, password } = req.body;
 
-    if (!serializer.isValid()) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Invalid data',
-            errors: serializer.errors
-        });
-    }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ username }).select('+password');
     if (!user) {
         return res.status(400).json({
             status: 'error',
             message: 'User with this email does not exist',
+        });
+    }
+
+    const serializer = new UserSerializer({ instance: user, data: req.body });
+    if (!serializer.isValid({ skip: ['email'] })) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Invalid data',
+            errors: serializer.errors
         });
     }
 
@@ -82,8 +83,4 @@ const login = async (req, res) => {
     });
 }
 
-const updateUser = async (req, res) => {
-    res.send('updateUser user')
-}
-
-export { register, login, updateUser }
+export { register, login }
