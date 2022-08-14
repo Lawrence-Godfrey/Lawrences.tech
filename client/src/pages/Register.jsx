@@ -49,7 +49,7 @@ const Register = () => {
 
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Already have an account? {'  '}
-                        <a href="/Login.jsx" className="font-medium text-orange-600 hover:text-orange-500">
+                        <a href="/login" className="font-medium text-orange-600 hover:text-orange-500">
                             Sign In
                         </a>
                     </p>
@@ -60,9 +60,9 @@ const Register = () => {
                 <form className='mt-8 space-y-6' onSubmit={onSubmit}>
 
                     <div className="rounded-md shadow-sm -space-y-px">
-                        <UsernameField roundingType="t" />
-                        <EmailField roundingType="m" />
-                        <PasswordField roundingType="b" />
+                        <UsernameField roundingType="rounded-t-md" />
+                        <EmailField roundingType="rounded-m-md" />
+                        <PasswordField roundingType="rounded-b-md" />
                     </div>
 
                     <div className="flex items-center justify-between">
