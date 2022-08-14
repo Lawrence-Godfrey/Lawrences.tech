@@ -47,7 +47,7 @@ const Login = () => {
 
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Don't have an account? {' '}
-                        <a href="/Register.jsx" className="font-medium text-orange-600 hover:text-orange-500">
+                        <a href="/register" className="font-medium text-orange-600 hover:text-orange-500">
                             Register
                         </a>
                     </p>
@@ -58,8 +58,8 @@ const Login = () => {
                     { showAlert && <Alert /> }
 
                     <div className="rounded-md shadow-sm -space-y-px">
-                        <UsernameField roundingType="t" />
-                        <PasswordField roundingType="b" />
+                        <UsernameField roundingType="rounded-t-md" />
+                        <PasswordField roundingType="rounded-b-md" />
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ const Login = () => {
                                   <LockClosedIcon className="h-5 w-5 text-orange-500 group-hover:text-orange-400" aria-hidden="true" />
                                 </span>
                             }
-                            Register
+                            Login
                         </button>
                     </div>
                 </form>
