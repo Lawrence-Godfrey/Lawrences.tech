@@ -27,8 +27,12 @@ const AppContext = React.createContext(initialState)
 const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    const displayAlert = () => {
-        dispatch({ type: Actions.DISPLAY_ALERT })
+    const displayAlert = (text: string, alertType: string) => {
+        if (!alertType) {
+            alertType = 'danger'
+        }
+
+        dispatch({ type: Actions.DISPLAY_ALERT, payload: {text, alertType} })
     }
 
     const clearAlert = () => {
