@@ -1,24 +1,15 @@
 import React from "react";
+import FormField from "./FormField";
 
 
 const PasswordField = (options) => {
+    let { label, name, id, htmlFor, error, onChange } = options;
+
     return (
-        <div>
-            <label htmlFor="password" className="sr-only">
-                Password
-            </label>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${options.roundingType} focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm`}
-                placeholder="Password"
-            />
-        </div>
-    )
-}
+        <FormField label={label} name={name} id={id} htmlFor={htmlFor} error={error} onChange={onChange}
+                   placeholder="••••••••••••" autoComplete="current-password" type="password" />
+    );
+};
 
 
 export default PasswordField;
