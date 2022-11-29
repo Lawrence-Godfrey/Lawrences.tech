@@ -46,10 +46,10 @@ const register = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const login = async (req, res) => {
-    const { username, password } = req.body;
 
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username }).select('+password');
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
         return res.status(400).json({
             status: 'error',
@@ -58,7 +58,7 @@ const login = async (req, res) => {
     }
 
     const serializer = new UserSerializer({ instance: user, data: req.body });
-    if (!serializer.isValid({ skip: ['email'] })) {
+    if (!serializer.isValid({ skip: ['username'] })) {
         return res.status(400).json({
             status: 'error',
             message: 'Invalid data',
@@ -76,7 +76,7 @@ const login = async (req, res) => {
     }
 
     const token = user.createJWT();
-    res.status(200).json({
+    return res.status(200).json({
         status: 'success',
         user: serializer.data(),
         token
