@@ -1,14 +1,26 @@
 import express from 'express';
-import logger from 'morgan';
+import dotenv from 'dotenv';
+import helmet from "helmet";
+
 import { authRouter, userRouter } from './routes/index.js';
+import requestLogger from './middleware/requestLogger.js';
+
+
+dotenv.config()
 
 const app = express();
 
-app.use(logger('dev'));
+// Logging middleware
+app.use(requestLogger);
+
+// Security middleware
+app.use(helmet());
+
+// Request parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// app.use('/', indexRouter);
+// Routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
