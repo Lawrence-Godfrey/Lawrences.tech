@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
-import { Logo, Alert, UsernameField, PasswordField } from "../components";
+import {Logo, Alert, PasswordField, EmailField} from "../components";
 import { useAppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
-import { LockClosedIcon } from "@heroicons/react/solid";
+import SubmitButton from "../components/SubmitButton";
+import FormDivider from "../components/FormDivider";
+import GoogleOAuthButton from "../components/GoogleOAuthButton";
+import GitHubOAuthButton from "../components/GitHubOAuthButton";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -14,15 +17,15 @@ const Login = () => {
         e.preventDefault()
 
         const userDetails = {
-            username: e.currentTarget.username.value,
+            email: e.currentTarget.email.value,
             password: e.currentTarget.password.value
         }
 
         // Check that all the values that need to be submitted are present.
         // Only need to check the name if it's not a member, i.e., the
         // user is registering and not logging in.
-        const { username, password } = userDetails;
-        if (!password || !username) {
+        const { email, password } = userDetails;
+        if (!password || !email) {
             displayAlert()
             clearAlert()
         }
@@ -38,64 +41,59 @@ const Login = () => {
     }, [user, navigate])
 
     return (
-        <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <Logo />
+        <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
+            <a href="#" className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white mr-6">
+                <img className="w-8 h-8 mr-2"
+                     src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+                     alt="logo"/>
+                Flowbite
+            </a>
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-h-screen">
+                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                            Sign In
+                        </h1>
 
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+                        { showAlert && <Alert /> }
 
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        Don't have an account? {' '}
-                        <a href="/register" className="font-medium text-orange-600 hover:text-orange-500">
-                            Register
-                        </a>
-                    </p>
-                </div>
+                        <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
+                            <EmailField />
+                            <PasswordField label="Password" htmlFor="password" id="password" name="password"/>
 
-                <form className='mt-8 space-y-6' onSubmit={onSubmit}>
+                            <SubmitButton text="Sign In" isLoading={isLoading} />
 
-                    { showAlert && <Alert /> }
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    <input id="remember-me" name="remember-me" type="checkbox"
+                                           className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"/>
+                                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                                            Remember me
+                                        </label>
+                                </div>
 
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <UsernameField roundingType="rounded-t-md" />
-                        <PasswordField roundingType="rounded-b-md" />
-                    </div>
+                                <div className="text-sm">
+                                    <a href="/forgotPassword" className="font-medium text-primary-600 hover:underline">Forgot
+                                        your password?</a>
+                                </div>
+                            </div>
+                        </form>
 
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input
-                                id="remember-me"
-                                name="remember-me"
-                                type="checkbox"
-                                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                Remember me
-                            </label>
-                        </div>
-                        <div className="text-sm">
-                            <a href="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
-                                Forgot your password?
+                        <FormDivider text="OR" />
+
+                        <GoogleOAuthButton text="Sign In with Google" />
+                        <GitHubOAuthButton text="Sign In with GitHub"/>
+
+
+                        <br></br>
+                        <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                            Don't have an Account?&nbsp;
+                            <a href="/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                                Sign Up Here
                             </a>
-                        </div>
+                        </p>
                     </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                            disabled={isLoading}
-                        >
-                            { isLoading &&
-                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                                  <LockClosedIcon className="h-5 w-5 text-orange-500 group-hover:text-orange-400" aria-hidden="true" />
-                                </span>
-                            }
-                            Login
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     );
