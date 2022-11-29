@@ -2,7 +2,10 @@ import Actions from "./actions";
 
 const reducer = (state: any, action: any) => {
     if (action.type === Actions.DISPLAY_ALERT) {
-        return {...state, showAlert: true, alertType: 'danger', alertText: 'Please fill in all fields'};
+        const alertType = action.payload.alertType || "danger";
+        const text = action.payload.text || "Something went wrong";
+
+        return {...state, showAlert: true, alertType: alertType, alertText: text};
     }
 
     if (action.type === Actions.CLEAR_ALERT) {
