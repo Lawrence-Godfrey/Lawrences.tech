@@ -1,4 +1,7 @@
 import { createLogger, transports, format } from 'winston';
+import dotenv from "dotenv";
+
+dotenv.config()
 
 const logger = createLogger({
     format: format.combine(
@@ -12,8 +15,11 @@ const logger = createLogger({
             maxsize: 5242880,
             maxFiles: 5,
         }),
-        new transports.Console(),
     ]
 });
+
+if (process.env.NODE_ENV === 'development') {
+    logger.add(new transports.Console());
+}
 
 export default logger;
