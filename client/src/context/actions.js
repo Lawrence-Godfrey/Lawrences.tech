@@ -9,6 +9,7 @@ const Actions = {
     LOGIN_USER_BEGIN: 'LOGIN_USER_BEGIN',
     LOGIN_USER_SUCCESS: 'LOGIN_USER_SUCCESS',
     LOGIN_USER_ERROR: 'LOGIN_USER_ERROR',
+    LOGOUT_USER: 'LOGOUT_USER',
 }
 
 Object.freeze(Actions);
