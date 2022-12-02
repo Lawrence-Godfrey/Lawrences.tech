@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { useAppContext } from "../context/appContext";
 
 const user = {
     name: 'Tom Cook',
@@ -27,6 +27,9 @@ function classNames(...classes) {
 
 
 const Dashboard = () => {
+
+    const { user, logoutUser } = useAppContext();
+
     return (
         <div className="min-h-full">
             <Disclosure as="nav" className="bg-gray-800">

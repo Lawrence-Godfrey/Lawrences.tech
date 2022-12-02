@@ -97,8 +97,14 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         clearAlert()
     }
 
+    const logoutUser = () => {
+        removeUserFromLocalStorage()
+        dispatch({ type: Actions.LOGOUT_USER })
+        window.location.reload();
+    }
+
     return (
-        <AppContext.Provider value={{ ...state, displayAlert, clearAlert, registerUser, loginUser }}>
+        <AppContext.Provider value={{ ...state, displayAlert, clearAlert, registerUser, loginUser, logoutUser }}>
         { children }
         </AppContext.Provider>
     )

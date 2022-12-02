@@ -1,4 +1,6 @@
 import Actions from "./actions";
+import { initialState } from "./appContext";
+
 
 const reducer = (state: any, action: any) => {
     if (action.type === Actions.DISPLAY_ALERT) {
@@ -63,6 +65,12 @@ const reducer = (state: any, action: any) => {
             alertText: action.payload.message
         };
     }
+
+
+    if (action.type === Actions.LOGOUT_USER) {
+        return { ...initialState };
+    }
+
 
     throw new Error(`no such action: ${action.type}`);
 };
