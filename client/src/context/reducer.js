@@ -23,7 +23,6 @@ const reducer = (state: any, action: any) => {
             ...state,
             isLoading: false,
             user: action.payload.user,
-            token: action.payload.token,
             showAlert: true,
             alertType: 'success',
             alertText: 'Successfully registered'
@@ -49,10 +48,7 @@ const reducer = (state: any, action: any) => {
             ...state,
             isLoading: false,
             user: action.payload.user,
-            token: action.payload.token,
-            showAlert: true,
-            alertType: 'success',
-            alertText: 'Successfully logged in'
+            showAlert: false,
         };
     }
 

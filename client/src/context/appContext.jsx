@@ -3,7 +3,6 @@ import reducer from "./reducer.js";
 import Actions from "./actions";
 import axios from "axios";
 
-const token = localStorage.getItem('token')
 const user = localStorage.getItem('user')
 const location = localStorage.getItem('location')
 
@@ -14,7 +13,6 @@ const initialState = {
     alertText: '',
     alertType: '',
     user: user ? JSON.parse(user) : null,
-    token: token,
     userLocation: location ? location : '',
     displayAlert: null,
     clearAlert: null,
@@ -36,19 +34,15 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
 
     const clearAlert = () => {
-        setTimeout(() => {
-            dispatch({ type: Actions.CLEAR_ALERT })
-        }, 3000)
+        dispatch({ type: Actions.CLEAR_ALERT })
     }
 
-    const addUserToLocalStorage = ({ user, token }) => {
+    const addUserToLocalStorage = ({ user }) => {
         localStorage.setItem('user', JSON.stringify(user))
-        localStorage.setItem('token', token)
     }
 
     const removeUserFromLocalStorage = () => {
         localStorage.removeItem('user')
-        localStorage.removeItem('token')
     }
 
     const registerUser = async (userDetails) => {
@@ -56,9 +50,9 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         try {
             const response = await axios.post('/api/auth/register', userDetails)
-            const { user, token } = response.data;
-            dispatch({ type: Actions.REGISTER_USER_SUCCESS, payload: { user, token } })
-            addUserToLocalStorage({ user, token })
+            const { user } = response.data;
+            dispatch({ type: Actions.REGISTER_USER_SUCCESS, payload: { user } })
+            addUserToLocalStorage({ user })
         } catch (error) {
             console.log(error)
             dispatch({
@@ -70,8 +64,6 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 }
             })
         }
-
-        clearAlert()
     }
 
     const loginUser = async (userDetails) => {
@@ -79,9 +71,12 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         try {
             const response = await axios.post('/api/auth/login', userDetails)
-            const { user, token } = response.data;
-            dispatch({ type: Actions.LOGIN_USER_SUCCESS, payload: { user, token } })
-            addUserToLocalStorage({ user, token })
+            const { user } = response.data;
+            dispatch({ type: Actions.LOGIN_USER_SUCCESS, payload: { user } })
+            addUserToLocalStorage({ user })
+            // navigate to dashboard
+            window.location.href = '/'
+
         } catch (error) {
             console.log(error)
             dispatch({
@@ -93,14 +88,17 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 }
             })
         }
-
-        clearAlert()
     }
 
-    const logoutUser = () => {
+    const logoutUser = async () => {
         removeUserFromLocalStorage()
-        dispatch({ type: Actions.LOGOUT_USER })
-        window.location.reload();
+        // Delete the `connect.sid` cookie
+        document.cookie = 'connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+        const response = await axios.get('/api/auth/logout')
+        if (response.status === 200) {
+            dispatch({ type: Actions.LOGOUT_USER })
+            window.location.reload();
+        }
     }
 
     return (

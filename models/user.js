@@ -1,12 +1,10 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 
 /**
  * Model a User instance.
- * @type {module:mongoose.Schema<any, Model<any, any, any, any>, {}, {}, {}, {}, DefaultTypeKey, {firstName: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], type: StringConstructor}, lastName: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], type: StringConstructor}, password: {minlength: (number|string)[], type: StringConstructor, required: (boolean|string)[]}, location: {trim: boolean, maxlength: (number|string)[], type: StringConstructor}, isAdmin: {default: boolean, type: BooleanConstructor}, isActive: {default: boolean, type: BooleanConstructor}, email: {unique: boolean, type: StringConstructor, required: (boolean|string)[], validate: {validator: any, message: string}}, username: {minlength: (number|string)[], trim: boolean, maxlength: (number|string)[], unique: boolean, type: StringConstructor, required: (boolean|string)[]}}>}
  */
 const UserSchema = new mongoose.Schema({
     username: {
@@ -28,8 +26,12 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'A password is required'],
+        required: false,
         minlength: [8, 'Password must be at least 8 characters']
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     },
     isAdmin: {
         type: Boolean,
@@ -55,9 +57,17 @@ const UserSchema = new mongoose.Schema({
         type: String,
         trim: true,
         maxlength: [50, 'Location must be at most 50 characters']
-    }
+    },
+    oauthType: {
+        type: String,
+        enum: ['google', 'github', 'local'],
+        default: 'local'
+    },
+    oauthId: {
+        type: String
+    },
 },{
-        timestamps: true
+    timestamps: true
 });
 
 
@@ -72,20 +82,6 @@ UserSchema.pre('save', async function () {
     }
 })
 
-/**
- * Create a JWT token for the user.
- * @memberof User
- * @instance
- * @method createJWT
- * @returns {string} The JWT token
- */
-UserSchema.methods.createJWT = function () {
-    return jwt.sign(
-        { userId: this._id },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JTW_EXPIRES_IN }
-    );
-}
 
 /**
  * Verify that a password is correct for a User instance.
@@ -95,8 +91,19 @@ UserSchema.methods.createJWT = function () {
  * @method verifyPassword
  * @returns {Promise<boolean>} True if the password is correct, false otherwise.
  */
-UserSchema.methods.verifyPassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
+UserSchema.methods.verifyPassword = function (password, callback) {
+    bcrypt.compare(password, this.password, (err, isMatch) => {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, isMatch);
+    });
+}
+
+// Find user by id
+UserSchema.statics.findById = function (id, callback) {
+    console.log('findById called');
+    return this.findOne({ _id: id }, callback);
 }
 
 
