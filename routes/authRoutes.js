@@ -43,4 +43,25 @@ router.route('/me').get((req, res) => {
 
 router.route('/forgotPassword').post()
 
+// OAuth Routes
+// Google
+router.route('/oauth/login/google').get(passport.authenticate('google', {
+    scope: ['profile', 'email']
+}));
+router.route('/oauth/callback/google').get(
+    passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }),
+    (req, res) => {
+        res.redirect('thisisatest');
+    }
+);
+
+// GitHub
+router.route('oauth/login/github').get(passport.authenticate('github'));
+router.route('/oauth/callback/github').get(
+    passport.authenticate('github', { failureRedirect: '/login', failureMessage: true }),
+    (req, res) => {
+        res.redirect('/');
+    }
+);
+
 export default router;

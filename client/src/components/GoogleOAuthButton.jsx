@@ -1,11 +1,10 @@
 import React from "react";
 
 const GoogleOAuthButton = (options) => {
-    const { text } = options;
+    const { text, onClick } = options;
 
     return (
-        <a href="#"
-           className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
+        <div onClick={ onClick } className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
             <div className="px-4 py-3">
                 <svg className="h-6 w-6" viewBox="0 0 40 40">
                     <path
@@ -23,7 +22,7 @@ const GoogleOAuthButton = (options) => {
                 </svg>
             </div>
             <h1 className="px-4 py-3 w-5/6 text-center text-gray-500 font-bold">{text}</h1>
-        </a>
+        </div>
     );
 };
 
