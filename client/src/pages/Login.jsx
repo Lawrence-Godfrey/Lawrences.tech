@@ -81,7 +81,7 @@ const Login = () => {
 
                         <FormDivider text="OR" />
 
-                        <GoogleOAuthButton text="Sign In with Google" />
+                        <GoogleOAuthButton text="Sign In with Google"/>
                         <GitHubOAuthButton text="Sign In with GitHub"/>
 
 

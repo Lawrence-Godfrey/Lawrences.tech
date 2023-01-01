@@ -1,5 +1,50 @@
 import User from '../models/user.js';
 import UserSerializer from "../serializers/userSerializer.js";
+import passport from "passport";
+import LocalStrategy from "passport-local";
+
+
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  }, async (email, password, done) => {
+    // Find the user with the given email
+    User.findOne({email: email}, (err, user) => {
+        if (err) {
+            return done(err);
+        }
+        if (!user) {
+            return done(null, false, {
+                statusCode: 401,
+                status: 'error',
+                message: 'User with this email does not exist',
+            });
+        }
+
+        // Check if the password is correct
+        user.verifyPassword(password, (err, isMatch) => {
+            if (err) {
+                return done(err);
+            }
+            if (!isMatch) {
+                return done(null, false, {
+                    statusCode: 401,
+                    status: 'error',
+                    message: 'Incorrect password',
+                });
+            }
+
+            const serializer = new UserSerializer({instance: user});
+
+            return done(null, user, {
+                statusCode: 200,
+                status: 'success',
+                message: 'Logged In Successfully',
+                user: serializer.data()
+            });
+        });
+    });
+}));
 
 
 /**
@@ -30,57 +75,30 @@ const register = async (req, res, next) => {
 
     } else {
         const newUser = await serializer.save();
-        const token = newUser.createJWT();
-        res.status(201).json({
-            status: 'success',
-            user: serializer.data(),
-            token
+        req.login(newUser, (err) => {
+            if (err) {
+                return next(err);
+            }
+            return res.status(201).json({
+                status: 'success',
+                message: 'User created successfully',
+                user: serializer.data()
+            });
         });
     }
 }
 
-/**
- * Get the user with the given id.
- * @param {Object} req    The request object
- * @param {Object} res    The response object
- * @returns {Promise<void>}
- */
-const login = async (req, res) => {
+// Serialize the user for the session
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
 
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'User with this email does not exist',
-        });
-    }
-
-    const serializer = new UserSerializer({ instance: user, data: req.body });
-    if (!serializer.isValid({ skip: ['username'] })) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Invalid data',
-            errors: serializer.errors
-        });
-    }
-
-    const isValidPassword = await user.verifyPassword(password);
-    if (!isValidPassword) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Invalid password',
-            user: serializer.data()
-        });
-    }
-
-    const token = user.createJWT();
-    return res.status(200).json({
-        status: 'success',
-        user: serializer.data(),
-        token
+// Deserialize the user from the session
+passport.deserializeUser((id, done) => {
+    User.findById(id, (err, user) => {
+        done(err, user);
     });
-}
+});
 
-export { register, login }
+
+export { register }
