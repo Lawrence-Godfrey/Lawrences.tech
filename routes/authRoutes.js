@@ -51,7 +51,12 @@ router.route('/oauth/login/google').get(passport.authenticate('google', {
 router.route('/oauth/callback/google').get(
     passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }),
     (req, res) => {
-        res.redirect('thisisatest');
+        req.login(req.user, (err) => {
+            if (err) {
+                return res.status(500).json({message: 'Server Error', status: 'error'});
+            }
+            return res.redirect('http://localhost:3000/');
+        });
     }
 );
 
