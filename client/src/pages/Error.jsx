@@ -33,7 +33,7 @@ const Error = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Error;

@@ -11,4 +11,4 @@ export {
     UsernameField,
     EmailField,
     PasswordField,
-}
+};

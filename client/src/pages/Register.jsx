@@ -1,73 +1,73 @@
-import React, {useEffect, useState} from "react";
-import {Logo, Alert, UsernameField, PasswordField, EmailField} from "../components";
-import { useAppContext } from "../context/appContext";
-import { useNavigate } from "react-router-dom";
-import SubmitButton from "../components/SubmitButton";
-import GitHubOAuthButton from "../components/GitHubOAuthButton";
-import GoogleOAuthButton from "../components/GoogleOAuthButton";
-import FormDivider from "../components/FormDivider";
+import React, { useEffect, useState } from 'react';
+import { Alert, UsernameField, PasswordField, EmailField } from '../components';
+import { useAppContext } from '../context/appContext';
+import { useNavigate } from 'react-router-dom';
+import SubmitButton from '../components/SubmitButton';
+import GitHubOAuthButton from '../components/GitHubOAuthButton';
+import GoogleOAuthButton from '../components/GoogleOAuthButton';
+import FormDivider from '../components/FormDivider';
 
 
 const Register = () => {
     const navigate = useNavigate();
 
     // Global variables
-    const { user, isLoading, showAlert, displayAlert, clearAlert, registerUser } = useAppContext()
+    const { user, isLoading, showAlert, displayAlert, clearAlert, registerUser } = useAppContext();
 
     const onSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         const userDetails = {
             username: e.currentTarget.username.value,
             email: e.currentTarget.email.value,
-            password: e.currentTarget.password.value
-        }
+            password: e.currentTarget.password.value,
+        };
 
         // Check that all the values that need to be submitted are present.
         // Only need to check the name if it's not a member, i.e., the
         // user is registering and not logging in.
         const { username, email, password } = userDetails;
         if (!email || !password || !username) {
-            displayAlert()
-            clearAlert()
+            displayAlert();
+            clearAlert();
         }
 
-        registerUser(userDetails)
-    }
+        registerUser(userDetails);
+    };
 
     // Navigate to the home page if the user object is not null.
     useEffect(() => {
         if (user) {
-            navigate('/')
+            navigate('/');
         }
-    }, [user, navigate])
+    }, [user, navigate]);
 
     const [formInput, setFormInput] = useState({
-        email: "",
-        password: "",
-        confirmPassword: "",
+        email: '',
+        password: '',
+        confirmPassword: '',
     });
 
     const [formError, setFormError] = useState({
-        email: "",
-        password: "",
-        confirmPassword: "",
+        email: '',
+        password: '',
+        confirmPassword: '',
     });
 
     useEffect(() => {
         if (formInput.password && formInput.confirmPassword && (formInput.password !== formInput.confirmPassword)) {
             setFormError(
-                formError => ({
+                (formError) => ({
                     ...formError,
-                    confirmPassword: "Passwords do not match",
-                })
+                    confirmPassword: 'Passwords do not match',
+                }),
             );
         } else {
             setFormError(
-                formError => ({
+                (formError) => ({
                     ...formError,
-                    confirmPassword: "",
-                })
+                    confirmPassword: '',
+                }),
             );
         }
     }, [formInput]);
@@ -81,16 +81,20 @@ const Register = () => {
 
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
-            <a href="#" className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white mr-6">
+            <a href="#" className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900
+             dark:text-white mr-6">
                 <img className="w-8 h-8 mr-2"
-                     src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-                     alt="logo"/>
+                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+                    alt="logo"/>
                     Flowbite
             </a>
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-h-screen">
-                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen
+             lg:py-0 max-h-screen">
+                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0
+                 dark:bg-gray-800 dark:border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl
+                         dark:text-white">
                             Create an Account
                         </h1>
 
@@ -124,7 +128,8 @@ const Register = () => {
                         <br></br>
                         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                             Already have an account?&nbsp;
-                            <a href="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                            <a href="/login" className="font-medium text-primary-600 hover:underline
+                             dark:text-primary-500">
                                  Login here
                             </a>
                         </p>
@@ -133,6 +138,6 @@ const Register = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Register;

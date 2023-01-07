@@ -102,7 +102,6 @@ UserSchema.methods.verifyPassword = function (password, callback) {
 
 // Find user by id
 UserSchema.statics.findById = function (id, callback) {
-    console.log('findById called');
     return this.findOne({ _id: id }, callback);
 }
 
