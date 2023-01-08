@@ -53,6 +53,10 @@ const UserSchema = new mongoose.Schema({
         minlength: [2, 'Last name must be at least 2 characters'],
         maxlength: [35, 'Last name must be at most 35 characters']
     },
+    avatar: {
+        type: String,
+        default: 'https://www.gravatar.com/avatar/?d=mp'
+    },
     location: {
         type: String,
         trim: true,
