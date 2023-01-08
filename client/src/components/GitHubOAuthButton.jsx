@@ -1,10 +1,10 @@
 import React from 'react';
 
 const GitHubOAuthButton = (options) => {
-    const { text } = options;
+    const { text, onClick } = options;
 
     return (
-        <a href="https://github.com"
+        <div onClick={ onClick }
             className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
             <div className="px-4 py-3">
                 <svg aria-hidden="true" className="octicon octicon-mark-github" height="24"
@@ -19,7 +19,7 @@ const GitHubOAuthButton = (options) => {
                 </svg>
             </div>
             <h1 className="px-4 py-3 w-5/6 text-center text-gray-500 font-bold">{text}</h1>
-        </a>
+        </div>
     );
 };
 
