@@ -1,4 +1,6 @@
-import GoogleStrategy from 'passport-google-oidc';
+import GoogleStrategy from 'passport-google-oauth20';
+import GitHubStrategy from 'passport-github2';
+
 import passport from "passport";
 import dotenv from 'dotenv';
 import User from '../models/user.js';
@@ -10,9 +12,9 @@ passport.use(new GoogleStrategy({
             clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
             callbackURL: process.env.GOOGLE_OAUTH_CALLBACK_URL,
         },
-        async (issuer, profile, cb) => {
-            console.log(`Issuer: ${issuer} Profile: ${profile}`)
+        async (accessToken, refreshToken, profile, cb) => {
             let user = await User.findOne({oauthType: 'google', oauthId: profile.id})
+
             if (user) {
                 return cb(null, user)
             }
@@ -21,6 +23,11 @@ passport.use(new GoogleStrategy({
             if (user) {
                 user.oauthType = 'google'
                 user.oauthId = profile.id
+
+                if (profile.photos && profile.photos.length > 0) {
+                    user.avatar = profile.photos[0].value
+                }
+
                 await user.save()
                 return cb(null, user)
             }
@@ -34,6 +41,7 @@ passport.use(new GoogleStrategy({
                         username: profile.displayName,
                         firstName: profile.name.givenName,
                         lastName: profile.name.familyName,
+                        avatar: profile.photos[0].value,
                     })
 
                     const error = await newUser.validate()

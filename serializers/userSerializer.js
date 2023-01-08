@@ -36,6 +36,7 @@ class UserSerializer extends Serializer {
             isAdmin: {},
             isActive: {},
             location: {},
+            avatar: {},
         }
 
         const model = User;
