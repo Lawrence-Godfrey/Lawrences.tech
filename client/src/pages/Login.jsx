@@ -20,6 +20,7 @@ const Login = () => {
         const userDetails = {
             email: e.currentTarget.email.value,
             password: e.currentTarget.password.value,
+            rememberMe: e.currentTarget.rememberMe.checked,
         };
 
         // Check that all the values that need to be submitted are present.
@@ -37,7 +38,6 @@ const Login = () => {
     // Navigate to the home page if the user object is not null.
     useEffect(() => {
         if (user) {
-            console.log('user is not null. navigating to home page');
             navigate('/');
         }
     }, [user, navigate]);
@@ -71,10 +71,10 @@ const Login = () => {
 
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
-                                    <input id="remember-me" name="remember-me" type="checkbox"
+                                    <input id="rememberMe" name="rememberMe" type="checkbox"
                                         className="h-4 w-4 rounded border-gray-300
                                          text-primary-600 focus:ring-primary-500"/>
-                                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                                    <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
                                             Remember me
                                     </label>
                                 </div>
