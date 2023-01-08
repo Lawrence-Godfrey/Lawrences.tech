@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react';
-import { useAppContext } from '../context/appContext';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+
+import { useAppContext } from '../context/appContext';
 import UserDropdown from '../components/UserDropdown';
 
 

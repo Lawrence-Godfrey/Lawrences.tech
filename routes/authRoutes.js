@@ -5,6 +5,10 @@ import { register } from '../controllers/authController.js';
 
 const router = express.Router();
 
+
+/*
+ * @route   POST api/auth/register
+ */
 router.route('/login').post((req, res) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
@@ -17,6 +21,13 @@ router.route('/login').post((req, res) => {
             if (err) {
                 return res.status(500).json({message: 'Server Error', status: 'error'});
             }
+
+            // Check the rememberMe flag sent through with the log in request and adjust the session accordingly
+            if (req.body.rememberMe) {
+                req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+            } else {
+                req.session.cookie.expires = false;
+            }
             return res.status(info.statusCode).json({ ...info, statusCode: undefined });
         });
     }
@@ -24,6 +35,7 @@ router.route('/login').post((req, res) => {
 });
 
 router.route('/register').post(register)
+
 router.route('/logout').get((req, res) => {
     req.logout(err => {
         if (err) {
