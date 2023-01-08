@@ -9,11 +9,10 @@ const Dashboard = () => {
     const { user, logoutUser } = useAppContext();
 
     const navigation = [
-        { name: 'Dashboard', href: '#', current: true },
-        { name: 'Team', href: '#', current: false },
-        { name: 'Projects', href: '#', current: false },
-        { name: 'Calendar', href: '#', current: false },
-        { name: 'Reports', href: '#', current: false },
+        { name: 'Home', href: '/', current: true },
+        { name: 'Projects', href: '/projects', current: false },
+        { name: 'About', href: '/about', current: false },
+        { name: 'Contact', href: '/contact', current: false },
     ];
 
     return (
@@ -53,7 +52,7 @@ const Dashboard = () => {
                                       md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900
                                        dark:border-gray-700">
                                         <li>
-                                            <a href="#"
+                                            <a href="/"
                                                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
                                                  md:hover:bg-transparent md:hover:text-blue-700 md:p-0
                                                   dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
@@ -62,7 +61,15 @@ const Dashboard = () => {
                                                 aria-current="page">Home</a>
                                         </li>
                                         <li>
-                                            <a href="#"
+                                            <a href="/projects"
+                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
+                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
+                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
+                                                   dark:hover:text-white md:dark:hover:bg-transparent
+                                                    dark:border-gray-700">Projects</a>
+                                        </li>
+                                        <li>
+                                            <a href="/about"
                                                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
                                                  md:hover:bg-transparent md:hover:text-blue-700 md:p-0
                                                   dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
@@ -70,23 +77,7 @@ const Dashboard = () => {
                                                     dark:border-gray-700">About</a>
                                         </li>
                                         <li>
-                                            <a href="#"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700">Services</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700">Pricing</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
+                                            <a href="/contact"
                                                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
                                                  md:hover:bg-transparent md:hover:text-blue-700 md:p-0
                                                   dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
