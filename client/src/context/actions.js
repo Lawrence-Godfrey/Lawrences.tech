@@ -10,6 +10,7 @@ const Actions = {
     LOGIN_USER_SUCCESS: 'LOGIN_USER_SUCCESS',
     LOGIN_USER_ERROR: 'LOGIN_USER_ERROR',
     LOGOUT_USER: 'LOGOUT_USER',
+    SET_USER: 'SET_USER',
 };
 
 Object.freeze(Actions);

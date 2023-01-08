@@ -1,11 +1,26 @@
-import React, { useReducer, useContext } from "react";
-import reducer from "./reducer.js";
-import Actions from "./actions";
-import axios from "axios";
+import React, { useReducer, useContext, useEffect } from 'react';
+import reducer from './reducer.js';
+import Actions from './actions';
+import axios from 'axios';
 
-const user = localStorage.getItem('user')
-const location = localStorage.getItem('location')
 
+const getMe = async () => {
+    try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+            const { user } = response.data;
+            return user;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        return null;
+    }
+};
+
+
+const user = localStorage.getItem('user');
+const location = localStorage.getItem('location');
 
 const initialState = {
     isLoading: false,
@@ -18,12 +33,25 @@ const initialState = {
     clearAlert: null,
     registerUser: null,
     loginUser: null,
-}
+};
+
+const AppContext = React.createContext(initialState);
 
 const AppContext = React.createContext(initialState)
 
-const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(reducer, initialState)
+    // If user is none, get user from server
+    useEffect(() => {
+        if (!state.user) {
+            getMe().then((user) => {
+                if (user) {
+                    dispatch({ type: Actions.SET_USER, payload: user });
+                    addUserToLocalStorage({ user });
+                    // reload page
+                    window.location.reload();
+                }
+            });
+        }
+    }, []);
 
     const displayAlert = (text: string, alertType: string) => {
         if (!alertType) {

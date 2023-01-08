@@ -67,6 +67,10 @@ const reducer = (state: any, action: any) => {
         return { ...initialState };
     }
 
+    if (action.type === Actions.SET_USER) {
+        return { ...state, user: action.payload.user };
+    }
+
 
     throw new Error(`no such action: ${action.type}`);
 };
