@@ -32,8 +32,17 @@ const Login = () => {
             clearAlert();
         }
 
-        loginUser(userDetails)
-    }
+        loginUser(userDetails);
+    };
+
+    // onClick function which directs the user to the backend oauth route
+    const OAuthGoogle = () => {
+        window.location.href = 'http://localhost:5050/api/auth/oauth/login/google';
+    };
+
+    const OAuthGitHub = () => {
+        window.location.href = 'http://localhost:5050/api/auth/oauth/login/github';
+    };
 
     // Navigate to the home page if the user object is not null.
     useEffect(() => {
@@ -90,7 +99,7 @@ const Login = () => {
                         <FormDivider text="OR" />
 
                         <GoogleOAuthButton text="Sign In with Google" onClick={ OAuthGoogle } />
-                        <GitHubOAuthButton text="Sign In with GitHub"/>
+                        <GitHubOAuthButton text="Sign In with GitHub" onClick={ OAuthGitHub } />
 
 
                         <br></br>

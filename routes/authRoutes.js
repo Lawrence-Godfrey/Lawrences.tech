@@ -73,11 +73,19 @@ router.route('/oauth/callback/google').get(
 );
 
 // GitHub
-router.route('oauth/login/github').get(passport.authenticate('github'));
+router.route('/oauth/login/github').get(passport.authenticate('github', {
+    scope: ['user:email']
+}));
+
 router.route('/oauth/callback/github').get(
     passport.authenticate('github', { failureRedirect: '/login', failureMessage: true }),
     (req, res) => {
-        res.redirect('/');
+        req.login(req.user, (err) => {
+            if (err) {
+                return res.status(500).json({message: 'Server Error', status: 'error'});
+            }
+            return res.redirect('http://localhost:3000/');
+        });
     }
 );
 
