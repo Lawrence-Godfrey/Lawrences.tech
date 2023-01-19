@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppContext } from '../context/appContext';
-import { useNavigate } from 'react-router-dom';
 
 import { Alert, PasswordField, EmailField } from '../components';
 import SubmitButton from '../components/SubmitButton';
@@ -9,10 +8,8 @@ import GoogleOAuthButton from '../components/GoogleOAuthButton';
 import GitHubOAuthButton from '../components/GitHubOAuthButton';
 
 const Login = () => {
-    const navigate = useNavigate();
-
     // Global variables
-    const { user, isLoading, showAlert, displayAlert, clearAlert, loginUser } = useAppContext();
+    const { isLoading, showAlert, displayAlert, clearAlert, loginUser } = useAppContext();
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -37,19 +34,12 @@ const Login = () => {
 
     // onClick function which directs the user to the backend oauth route
     const OAuthGoogle = () => {
-        window.location.href = 'http://localhost:5050/api/auth/oauth/login/google';
+        window.location.href = `${environment.serverHost}/api/auth/oauth/login/google`;
     };
 
     const OAuthGitHub = () => {
-        window.location.href = 'http://localhost:5050/api/auth/oauth/login/github';
+        window.location.href = `${environment.serverHost}/api/auth/oauth/login/github`;
     };
-
-    // Navigate to the home page if the user object is not null.
-    useEffect(() => {
-        if (user) {
-            navigate('/');
-        }
-    }, [user, navigate]);
 
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">

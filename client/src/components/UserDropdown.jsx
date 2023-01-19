@@ -1,11 +1,24 @@
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { useAppContext } from '../context/appContext';
 
 
-const UserDropdown = (options) => {
-    const { user, logout } = options;
+const UserDropdown = () => {
+    const { getMe, logoutUser } = useAppContext();
 
-    return (
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        if (user === null) {
+            getMe().then((user) => {
+                setUser(user);
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    }, [getMe]);
+
+    return user ? (
         <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
@@ -42,7 +55,7 @@ const UserDropdown = (options) => {
                         <div>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a href="#"
+                                    <a href="/profile"
                                         className={
                                             `${active ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700`
                                         }
@@ -53,7 +66,7 @@ const UserDropdown = (options) => {
                             </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <a href="#"
+                                    <a href="/settings"
                                         className = {
                                             `${active ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700`
                                         }
@@ -67,7 +80,7 @@ const UserDropdown = (options) => {
                                     <span className={
                                         `${active ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700`
                                     }
-                                    onClick={ logout }>
+                                    onClick={ logoutUser }>
                                         Sign out
                                     </span>
                                 )}
@@ -76,6 +89,24 @@ const UserDropdown = (options) => {
                     </Menu.Items>
                 </Transition>
             </Menu>
+        </div>
+    ) : (
+        <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static
+                             sm:inset-auto sm:ml-6 sm:pr-0">
+            <a href="/login"
+                className="text-gray-700 dark:text-gray-400 hover:bg-gray-100
+                                     dark:hover:bg-gray-700 dark:hover:text-white px-3 py-2 rounded-md
+                                      text-sm font-medium"
+            >
+                Sign in
+            </a>
+            <a href="/register"
+                className="ml-4 text-gray-700 dark:text-gray-400 hover:bg-gray-100
+                                     dark:hover:bg-gray-700 dark:hover:text-white px-3 py-2 rounded-md
+                                      text-sm font-medium"
+            >
+                Sign up
+            </a>
         </div>
     );
 };

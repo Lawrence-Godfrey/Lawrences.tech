@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Register, Login, Error, Dashboard, Profile } from './pages';
-import ProtectedRoute from './pages/ProtectedRoute';
 
 
 /**
@@ -16,7 +15,7 @@ function App() {
                 <Route path="/" element={ <Dashboard /> } />
                 <Route path="/register" element={ <Register /> } />
                 <Route path="/login" element={ <Login /> } />
-                <Route path="/profile" element={ <ProtectedRoute component={ <Profile /> } /> } />
+                <Route path="/profile" element={ <Profile /> } />
                 <Route path="*" element={ <Error /> } />
             </Routes>
         </BrowserRouter>
