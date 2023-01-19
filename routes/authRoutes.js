@@ -1,9 +1,12 @@
 import express from 'express';
 import passport from 'passport';
+import dotenv from 'dotenv';
+
 import UserSerializer from "../serializers/userSerializer.js";
 import { register } from '../controllers/authController.js';
 
 const router = express.Router();
+dotenv.config()
 
 
 /*
@@ -60,17 +63,25 @@ router.route('/forgotPassword').post()
 router.route('/oauth/login/google').get(passport.authenticate('google', {
     scope: ['profile', 'email']
 }));
-router.route('/oauth/callback/google').get(
-    passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }),
-    (req, res) => {
-        req.login(req.user, (err) => {
+router.route('/oauth/callback/google').get((req, res) => {
+    passport.authenticate('google', {failureRedirect: '/login', failureMessage: true},
+        (err, user) => {
             if (err) {
-                return res.status(500).json({message: 'Server Error', status: 'error'});
+                return res.status(500).json({ message: 'Server Error', status: 'error'});
             }
-            return res.redirect('http://localhost:3000/');
-        });
-    }
-);
+            if (!user) {
+                return res.status(401).json({ message: 'Unauthorized', status: 'error'});
+            }
+            req.login(user, (err) => {
+                if (err) {
+                    return res.status(500).json({message: 'Server Error', status: 'error'});
+                }
+
+                return res.redirect(`${process.env.HOST}:3000/`);
+            });
+        }
+    )(req, res);
+});
 
 // GitHub
 router.route('/oauth/login/github').get(passport.authenticate('github', {
@@ -84,7 +95,7 @@ router.route('/oauth/callback/github').get(
             if (err) {
                 return res.status(500).json({message: 'Server Error', status: 'error'});
             }
-            return res.redirect('http://localhost:3000/');
+            return res.redirect(`${process.env.HOST}:3000/`);
         });
     }
 );

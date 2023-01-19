@@ -5,6 +5,7 @@ import morganBody from 'morgan-body';
 import session from 'express-session';
 import mongoDBSession from 'connect-mongodb-session';
 import flash from 'connect-flash';
+import cors from 'cors';
 
 import { authRouter, userRouter } from './routes/index.js';
 import requestLogger from './middleware/requestLogger.js';
@@ -15,6 +16,8 @@ dotenv.config()
 let MongoDBStore = mongoDBSession(session);
 
 const app = express();
+
+app.use(cors());
 
 // Logging middleware
 app.use(requestLogger);
