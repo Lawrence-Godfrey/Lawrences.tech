@@ -1,34 +1,16 @@
-import React, { useReducer, useContext, useEffect } from 'react';
+import React, { useReducer, useContext } from 'react';
 import reducer from './reducer.js';
 import Actions from './actions';
 import axios from 'axios';
 
-
-const getMe = async () => {
-    try {
-        const response = await axios.get('/api/auth/me');
-        if (response.status === 200) {
-            const { user } = response.data;
-            return user;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        return null;
-    }
-};
-
-
-const user = localStorage.getItem('user');
-const location = localStorage.getItem('location');
 
 const initialState = {
     isLoading: false,
     showAlert: false,
     alertText: '',
     alertType: '',
-    user: user ? JSON.parse(user) : null,
-    userLocation: location ? location : '',
+    user: null,
+    userLocation: '',
     displayAlert: null,
     clearAlert: null,
     registerUser: null,
@@ -39,20 +21,6 @@ const AppContext = React.createContext(initialState);
 
 const AppProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
-
-    // If user is none, get user from server
-    useEffect(() => {
-        if (!state.user) {
-            getMe().then((user) => {
-                if (user) {
-                    dispatch({ type: Actions.SET_USER, payload: user });
-                    addUserToLocalStorage({ user });
-                    // reload page
-                    window.location.reload();
-                }
-            });
-        }
-    }, []);
 
     const displayAlert = (text, alertType) => {
         if (!alertType) {
@@ -66,14 +34,6 @@ const AppProvider = ({ children }) => {
         dispatch({ type: Actions.CLEAR_ALERT });
     };
 
-    const addUserToLocalStorage = ({ user }) => {
-        localStorage.setItem('user', JSON.stringify(user));
-    };
-
-    const removeUserFromLocalStorage = () => {
-        localStorage.removeItem('user');
-    };
-
     const registerUser = async (userDetails) => {
         dispatch({ type: Actions.REGISTER_USER_BEGIN });
 
@@ -81,7 +41,6 @@ const AppProvider = ({ children }) => {
             const response = await axios.post('/api/auth/register', userDetails);
             const { user } = response.data;
             dispatch({ type: Actions.REGISTER_USER_SUCCESS, payload: { user } });
-            addUserToLocalStorage({ user });
         } catch (error) {
             console.log(error);
             dispatch({
@@ -102,7 +61,6 @@ const AppProvider = ({ children }) => {
             const response = await axios.post('/api/auth/login', userDetails);
             const { user } = response.data;
             dispatch({ type: Actions.LOGIN_USER_SUCCESS, payload: { user } });
-            addUserToLocalStorage({ user });
             // navigate to dashboard
             window.location.href = '/';
         } catch (error) {
@@ -119,7 +77,6 @@ const AppProvider = ({ children }) => {
     };
 
     const logoutUser = async () => {
-        removeUserFromLocalStorage();
         // Delete the `connect.sid` cookie
         document.cookie = 'connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         const response = await axios.get('/api/auth/logout');
@@ -129,8 +86,25 @@ const AppProvider = ({ children }) => {
         }
     };
 
+    const getMe = async () => {
+        // Makes a request to the backend to get the authenticated user
+        // If the user is authenticated, a promise is returned with the user object
+        // If the user is not authenticated reject is returned
+        return new Promise((resolve, reject) => {
+            axios
+                .get('/api/auth/me')
+                .then((response) => {
+                    const { user } = response.data;
+                    resolve(user);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    };
+
     return (
-        <AppContext.Provider value={{ ...state, displayAlert, clearAlert, registerUser, loginUser, logoutUser }}>
+        <AppContext.Provider value={{ ...state, displayAlert, clearAlert, registerUser, loginUser, logoutUser, getMe }}>
             { children }
         </AppContext.Provider>
     );

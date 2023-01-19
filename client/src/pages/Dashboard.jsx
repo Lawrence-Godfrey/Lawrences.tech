@@ -1,13 +1,10 @@
 import { Disclosure } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { useAppContext } from '../context/appContext';
 import UserDropdown from '../components/UserDropdown';
 
 
 const Dashboard = () => {
-    const { user, logoutUser } = useAppContext();
-
     const navigation = [
         { name: 'Home', href: '/', current: true },
         { name: 'Projects', href: '/projects', current: false },
@@ -89,27 +86,8 @@ const Dashboard = () => {
                             </div>
                             {/* Dropdown menu should be hidden if the user is not available,
                             otherwise sign up / sign in button */}
-                            {user ? (
-                                <UserDropdown user={user} logout={logoutUser} />
-                            ) : (
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static
-                                 sm:inset-auto sm:ml-6 sm:pr-0">
-                                    <a href="/login"
-                                        className="text-gray-700 dark:text-gray-400 hover:bg-gray-100
-                                         dark:hover:bg-gray-700 dark:hover:text-white px-3 py-2 rounded-md
-                                          text-sm font-medium"
-                                    >
-                                        Sign in
-                                    </a>
-                                    <a href="/register"
-                                        className="ml-4 text-gray-700 dark:text-gray-400 hover:bg-gray-100
-                                         dark:hover:bg-gray-700 dark:hover:text-white px-3 py-2 rounded-md
-                                          text-sm font-medium"
-                                    >
-                                        Sign up
-                                    </a>
-                                </div>
-                            )}
+
+                            <UserDropdown />
                         </div>
                     </div>
 

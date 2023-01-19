@@ -1,21 +1,21 @@
-import Actions from "./actions";
-import { initialState } from "./appContext";
+import Actions from './actions';
+import { initialState } from './appContext';
 
 
-const reducer = (state: any, action: any) => {
+const reducer = (state, action) => {
     if (action.type === Actions.DISPLAY_ALERT) {
-        const alertType = action.payload.alertType || "danger";
-        const text = action.payload.text || "Something went wrong";
+        const alertType = action.payload.alertType || 'danger';
+        const text = action.payload.text || 'Something went wrong';
 
-        return {...state, showAlert: true, alertType: alertType, alertText: text};
+        return { ...state, showAlert: true, alertType: alertType, alertText: text };
     }
 
     if (action.type === Actions.CLEAR_ALERT) {
-        return {...state, showAlert: false, alertType: '', alertText: ''};
+        return { ...state, showAlert: false, alertType: '', alertText: '' };
     }
 
     if (action.type === Actions.REGISTER_USER_BEGIN) {
-        return {...state, isLoading: true};
+        return { ...state, isLoading: true };
     }
 
     if (action.type === Actions.REGISTER_USER_SUCCESS) {
@@ -25,7 +25,7 @@ const reducer = (state: any, action: any) => {
             user: action.payload.user,
             showAlert: true,
             alertType: 'success',
-            alertText: 'Successfully registered'
+            alertText: 'Successfully registered',
         };
     }
 
@@ -35,12 +35,12 @@ const reducer = (state: any, action: any) => {
             isLoading: false,
             showAlert: true,
             alertType: 'danger',
-            alertText: action.payload.message
+            alertText: action.payload.message,
         };
     }
 
     if (action.type === Actions.LOGIN_USER_BEGIN) {
-        return {...state, isLoading: true};
+        return { ...state, isLoading: true };
     }
 
     if (action.type === Actions.LOGIN_USER_SUCCESS) {
@@ -58,7 +58,7 @@ const reducer = (state: any, action: any) => {
             isLoading: false,
             showAlert: true,
             alertType: 'danger',
-            alertText: action.payload.message
+            alertText: action.payload.message,
         };
     }
 
