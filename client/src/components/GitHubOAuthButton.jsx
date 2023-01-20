@@ -3,8 +3,12 @@ import React from 'react';
 const GitHubOAuthButton = (options) => {
     const { text, onClick } = options;
 
+    const OAuthGitHub = () => {
+        window.location.href = `${environment.serverHost}/api/auth/oauth/login/github`;
+    };
+
     return (
-        <div onClick={ onClick }
+        <div onClick={ onClick ? onClick : OAuthGitHub }
             className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
             <div className="px-4 py-3">
                 <svg aria-hidden="true" className="octicon octicon-mark-github" height="24"

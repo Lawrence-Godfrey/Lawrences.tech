@@ -32,15 +32,6 @@ const Login = () => {
         loginUser(userDetails);
     };
 
-    // onClick function which directs the user to the backend oauth route
-    const OAuthGoogle = () => {
-        window.location.href = `${environment.serverHost}/api/auth/oauth/login/google`;
-    };
-
-    const OAuthGitHub = () => {
-        window.location.href = `${environment.serverHost}/api/auth/oauth/login/github`;
-    };
-
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
             <a href="#" className="flex items-center justify-center mb-6 text-2xl
@@ -88,8 +79,8 @@ const Login = () => {
 
                         <FormDivider text="OR" />
 
-                        <GoogleOAuthButton text="Sign In with Google" onClick={ OAuthGoogle } />
-                        <GitHubOAuthButton text="Sign In with GitHub" onClick={ OAuthGitHub } />
+                        <GoogleOAuthButton text="Sign In with Google"/>
+                        <GitHubOAuthButton text="Sign In with GitHub"/>
 
 
                         <br></br>
