@@ -122,7 +122,7 @@ const Register = () => {
                         <FormDivider text="OR" />
 
                         <GoogleOAuthButton text="Sign Up with Google" />
-                        <GitHubOAuthButton text="Sign Up with GitHub"/>
+                        <GitHubOAuthButton text="Sign Up with GitHub" />
 
 
                         <br></br>

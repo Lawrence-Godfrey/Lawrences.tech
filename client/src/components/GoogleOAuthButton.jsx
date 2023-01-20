@@ -1,10 +1,16 @@
 import React from 'react';
 
 const GoogleOAuthButton = (options) => {
+
     const { text, onClick } = options;
 
+    // onClick function which directs the user to the backend oauth route
+    const OAuthGoogle = () => {
+        window.location.href = `${environment.serverHost}/api/auth/oauth/login/google`;
+    };
+
     return (
-        <div onClick={ onClick }
+        <div onClick={ onClick ? onClick : OAuthGoogle }
             className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
             <div className="px-4 py-3">
                 <svg className="h-6 w-6" viewBox="0 0 40 40">
