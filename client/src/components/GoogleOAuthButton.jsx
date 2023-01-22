@@ -1,7 +1,6 @@
 import React from 'react';
 
 const GoogleOAuthButton = (options) => {
-
     const { text, onClick } = options;
 
     // onClick function which directs the user to the backend oauth route
