@@ -77,7 +77,7 @@ router.route('/oauth/callback/google').get((req, res) => {
                     return res.status(500).json({message: 'Server Error', status: 'error'});
                 }
 
-                return res.redirect(`${process.env.HOST}:3000/`);
+                return res.redirect(`${process.env.HOST}:${process.env.PORT}/`);
             });
         }
     )(req, res);
