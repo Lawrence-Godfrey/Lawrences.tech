@@ -95,7 +95,7 @@ router.route('/oauth/callback/github').get(
             if (err) {
                 return res.status(500).json({message: 'Server Error', status: 'error'});
             }
-            return res.redirect(`${process.env.HOST}:3000/`);
+            return res.redirect(`${process.env.HOST}:${process.env.PORT}/`);
         });
     }
 );
