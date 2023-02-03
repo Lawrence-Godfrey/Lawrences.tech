@@ -84,9 +84,7 @@ router.route('/oauth/callback/google').get((req, res) => {
 });
 
 // GitHub
-router.route('/oauth/login/github').get(passport.authenticate('github', {
-    scope: ['user:email']
-}));
+router.route('/oauth/login/github').get(passport.authenticate('github'));
 
 router.route('/oauth/callback/github').get(
     passport.authenticate('github', { failureRedirect: '/login', failureMessage: true }),
