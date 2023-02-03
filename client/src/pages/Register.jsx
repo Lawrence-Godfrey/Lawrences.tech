@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, UsernameField, PasswordField, EmailField } from '../components';
+import { Alert, UsernameField, PasswordField, EmailField, Logo } from '../components';
 import { useAppContext } from '../context/appContext';
 import { useNavigate } from 'react-router-dom';
 import SubmitButton from '../components/SubmitButton';
@@ -81,13 +81,7 @@ const Register = () => {
 
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
-            <a href="#" className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900
-             dark:text-white mr-6">
-                <img className="w-8 h-8 mr-2"
-                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-                    alt="logo"/>
-                    Flowbite
-            </a>
+            <Logo />
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen
              lg:py-0 max-h-screen">
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0
