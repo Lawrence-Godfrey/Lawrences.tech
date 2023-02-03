@@ -4,7 +4,7 @@ const GitHubOAuthButton = (options) => {
     const { text, onClick } = options;
 
     const OAuthGitHub = () => {
-        window.location.href = `${environment.serverHost}/api/auth/oauth/login/github`;
+        window.location.href = `/api/auth/oauth/login/github`;
     };
 
     return (

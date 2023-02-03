@@ -5,7 +5,7 @@ const GoogleOAuthButton = (options) => {
 
     // onClick function which directs the user to the backend oauth route
     const OAuthGoogle = () => {
-        window.location.href = `${environment.serverHost}/api/auth/oauth/login/google`;
+        window.location.href = `/api/auth/oauth/login/google`;
     };
 
     return (
