@@ -64,7 +64,8 @@ const LorenzAttractor = () => {
         camera.position.set(...cameraPosition);
 
         const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Set the size of the renderer to half the size of the window
+        renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
         containerRef.current.appendChild(renderer.domElement);
 
         // Allow the user to move the camera
@@ -92,7 +93,22 @@ const LorenzAttractor = () => {
         };
     }, []);
 
-    return <div ref={containerRef} />;
+    return (
+        <div ref={containerRef}
+            style={{ width: '50%', height: '50%', display: 'block', margin: '0 auto', marginTop: '5%' }}>
+            <style>
+                {`
+                    @media (min-width: 800px) {
+                        div[ref="containerRef"] {
+                            width: 50%;
+                            height: 50%;
+                            margin-top: 25%;
+                        }
+                    }
+                `}
+            </style>
+        </div>
+    );
 };
 
 export default LorenzAttractor;
