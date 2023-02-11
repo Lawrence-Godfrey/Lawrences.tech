@@ -86,6 +86,10 @@ const LorenzAttractor = () => {
             requestAnimationFrame(animate);
         };
         animate();
+
+        return () => {
+            containerRef.current.removeChild(renderer.domElement);
+        };
     }, []);
 
     return <div ref={containerRef} />;
