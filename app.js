@@ -17,7 +17,9 @@ let MongoDBStore = mongoDBSession(session);
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? [process.env.CLIENT_URL, /\.google\.com$/] : '*',
+}));
 
 // Logging middleware
 app.use(requestLogger);
