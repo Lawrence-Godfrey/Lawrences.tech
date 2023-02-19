@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -9,6 +9,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
  * @param {Number} numAgents - The number of agents to render
  * @param {Number} startRange - The range of the starting coordinates
  * @param {Number} timeStep - The time step for the simulation
+ * @param {Boolean} linesOn - Whether the agents should create lines tracking their path
  * @return {JSX.Element}
  */
 const LorenzAttractor = ({
@@ -16,6 +17,7 @@ const LorenzAttractor = ({
     numAgents = 10,
     startRange = 1,
     timeStep = 0.005,
+    linesOn = false,
 }) => {
     const containerRef = useRef(null);
     const agentsRef = useRef([]);
@@ -25,23 +27,45 @@ const LorenzAttractor = ({
     const cameraPosition = [-24, 5, -16]; // Camera position
     const cameraLookAt = [-12, 0, 5]; // The point to set the camera to point to
 
+    const maxHistoricalPoints = 15000;
+
     const createAgents = (numAgents, sphereRadius, startRange) => {
         const agents = [];
         for (let i = 0; i < numAgents; i++) {
-            // Create an agent with random x,y,z coordinates
-            // between 0 and a set value
-            const coords = {
-                x: Math.random() * startRange,
-                y: Math.random() * startRange,
-                z: Math.random() * startRange,
+            const colour = Math.random() * 0xffffff;
+
+            const agent = {
+                historicalCoords: {
+                    x: [],
+                    y: [],
+                    z: [],
+                },
+                coords: {
+                    x: Math.random() * startRange,
+                    y: Math.random() * startRange,
+                    z: Math.random() * startRange,
+                },
+                sphere: new THREE.Mesh(
+                    new THREE.SphereGeometry(sphereRadius),
+                    new THREE.MeshBasicMaterial({ color: colour }),
+                ),
+                line: null,
             };
-            // Create a sphere geometry and give it a random colour
-            const sphere = new THREE.Mesh(
-                new THREE.SphereGeometry(sphereRadius),
-                new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff }),
-            );
-            sphere.position.set(coords.x, coords.y, coords.z);
-            agents.push({ coords, sphere });
+
+            const { coords } = agent;
+            agent.sphere.position.set(coords.x, coords.y, coords.z);
+
+            const positions = new Float32Array(3 * maxHistoricalPoints);
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setDrawRange(0, 0);
+
+            const material = new THREE.LineBasicMaterial( { color: colour });
+
+            agent.line = new THREE.Line(geometry, material);
+
+            agents.push(agent);
         }
         return agents;
     };
@@ -57,6 +81,21 @@ const LorenzAttractor = ({
             agent.coords.z += dz * timeStepRef.current;
 
             agent.sphere.position.set(agent.coords.x, agent.coords.y, agent.coords.z);
+
+            agent.historicalCoords.x.push(agent.coords.x);
+            agent.historicalCoords.y.push(agent.coords.y);
+            agent.historicalCoords.z.push(agent.coords.z);
+
+            const positions = agent.line.geometry.attributes.position.array;
+
+            for (let i = 0; i < agent.historicalCoords.x.length; i++) {
+                positions [3*i] = agent.historicalCoords.x[i];
+                positions [3*i+1] = agent.historicalCoords.y[i];
+                positions [3*i+2] = agent.historicalCoords.z[i];
+            }
+
+            agent.line.geometry.setDrawRange(0, agent.historicalCoords.x.length);
+            agent.line.geometry.attributes.position.needsUpdate = true;
         }
     };
 
@@ -85,6 +124,10 @@ const LorenzAttractor = ({
 
         for (const agent of agentsRef.current) {
             scene.add(agent.sphere);
+            if (agent.line) {
+                console.log('Adding line to scene');
+                scene.add(agent.line);
+            }
         }
 
         // Render the updated state
@@ -101,6 +144,9 @@ const LorenzAttractor = ({
         return () => {
             for (const agent of agentsRef.current) {
                 scene.remove(agent.sphere);
+                if (agent.line) {
+                    scene.remove(agent.line);
+                }
             }
             agentsRef.current = [];
             containerRef.current.removeChild(renderer.domElement);
@@ -122,6 +168,13 @@ const LorenzAttractor = ({
         timeStepRef.current = timeStep;
     }, [timeStep]);
 
+    useEffect(() => {
+        for (const agent of agentsRef.current) {
+            if (agent.line) {
+                agent.line.visible = linesOn;
+            }
+        }
+    });
     return (
         <div ref={containerRef} />
     );
