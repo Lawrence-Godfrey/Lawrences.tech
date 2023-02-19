@@ -5,19 +5,27 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 /**
  * Renders a 3D scene with a Lorenz Attractor
  * simulation.
+ * @param {Number} sphereRadius - The radius of the spheres
+ * @param {Number} numAgents - The number of agents to render
+ * @param {Number} startRange - The range of the starting coordinates
+ * @param {Number} timeStep - The time step for the simulation
  * @return {JSX.Element}
  */
-const LorenzAttractor = () => {
+const LorenzAttractor = ({
+    sphereRadius = 0.3,
+    numAgents = 10,
+    startRange = 1,
+    timeStep = 0.005,
+}) => {
     const containerRef = useRef(null);
+    const agentsRef = useRef([]);
+    const animationFrameRef = useRef(null);
+    const timeStepRef = useRef(timeStep);
 
     const cameraPosition = [-24, 5, -16]; // Camera position
     const cameraLookAt = [-12, 0, 5]; // The point to set the camera to point to
-    const numAgents = 500; // Number of agents (spheres or particles) to render
-    const startRange = 1; // The agents start between 0 and this value
-    const sphereRadius = 0.3; // The radius of the agent spheres
-    const timeStep = 0.005; // The time step for the simulation. Higher means faster
 
-    const createAgents = (numAgents) => {
+    const createAgents = (numAgents, sphereRadius, startRange) => {
         const agents = [];
         for (let i = 0; i < numAgents; i++) {
             // Create an agent with random x,y,z coordinates
@@ -44,9 +52,9 @@ const LorenzAttractor = () => {
             const dy = agent.coords.x * (28 - agent.coords.z) - agent.coords.y;
             const dz = agent.coords.x * agent.coords.y - (8 / 3) * agent.coords.z;
 
-            agent.coords.x += dx * timeStep;
-            agent.coords.y += dy * timeStep;
-            agent.coords.z += dz * timeStep;
+            agent.coords.x += dx * timeStepRef.current;
+            agent.coords.y += dy * timeStepRef.current;
+            agent.coords.z += dz * timeStepRef.current;
 
             agent.sphere.position.set(agent.coords.x, agent.coords.y, agent.coords.z);
         }
@@ -73,41 +81,49 @@ const LorenzAttractor = () => {
         controls.target.set(...cameraLookAt);
         controls.update();
 
-        const agents = createAgents(numAgents);
+        agentsRef.current = createAgents(numAgents, sphereRadius, startRange);
 
-        for (const agent of agents) {
+        for (const agent of agentsRef.current) {
             scene.add(agent.sphere);
         }
 
         // Render the updated state
         const animate = () => {
-            update(agents);
+            update(agentsRef.current);
             controls.update();
             renderer.render(scene, camera);
-            requestAnimationFrame(animate);
+            animationFrameRef.current = requestAnimationFrame(animate);
         };
+        // Cancel the current animation frame before starting a new one
+        cancelAnimationFrame(animationFrameRef.current);
         animate();
 
         return () => {
+            for (const agent of agentsRef.current) {
+                scene.remove(agent.sphere);
+            }
+            agentsRef.current = [];
             containerRef.current.removeChild(renderer.domElement);
+            renderer.dispose();
+            renderer.forceContextLoss();
+            // Cancel the current animation frame when the component is unmounted
+            cancelAnimationFrame(animationFrameRef.current);
         };
-    }, []);
+    }, [numAgents, startRange]);
+
+    useEffect(() => {
+        for (const agent of agentsRef.current) {
+            agent.sphere.geometry.dispose();
+            agent.sphere.geometry = new THREE.SphereGeometry(sphereRadius);
+        }
+    }, [sphereRadius]);
+
+    useEffect(() => {
+        timeStepRef.current = timeStep;
+    }, [timeStep]);
 
     return (
-        <div ref={containerRef}
-            style={{ width: '50%', height: '50%', display: 'block', margin: '0 auto', marginTop: '5%' }}>
-            <style>
-                {`
-                    @media (min-width: 800px) {
-                        div[ref="containerRef"] {
-                            width: 50%;
-                            height: 50%;
-                            margin-top: 25%;
-                        }
-                    }
-                `}
-            </style>
-        </div>
+        <div ref={containerRef} />
     );
 };
 
