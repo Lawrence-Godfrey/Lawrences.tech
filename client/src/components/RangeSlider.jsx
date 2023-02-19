@@ -2,7 +2,7 @@
 
 const RangeSlider = ({ value, onChange, min, max, step }) => {
     return (
-        <div className="relative flex items-center">
+        <div className="relative flex items-center w-40">
             <input id="default-range" type="range" min={min} max={max} step={step} value={value}
                 onChange={onChange}
                 className="w-32 h-2 bg-gray-200 rounded-lg appearance-none
