@@ -31,6 +31,7 @@ const UserDropdown = () => {
                             src={user.avatar ? user.avatar : '' +
                                 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
                             referrerPolicy="no-referrer"
+                            crossOrigin="anonymous"
                             alt=""
                         />
                     </Menu.Button>
