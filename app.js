@@ -17,7 +17,9 @@ let MongoDBStore = mongoDBSession(session);
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? [process.env.CLIENT_URL, /\.google\.com$/] : '*',
+}));
 
 // Logging middleware
 app.use(requestLogger);
@@ -41,19 +43,26 @@ store.on('error', function(error) {
     console.log(`Error: ${error}`);
 });
 
+
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1) // trust first proxy. Required since the app is
+    // behind a proxy which terminates the SSL connection
+}
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24,  // 1 day
-        secure: false
+        maxAge: process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 * 2 : 1000 * 60 * 60 * 24 * 7 * 52,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
     },
     store: store,
-    // Boilerplate options, see:
-    // * https://www.npmjs.com/package/express-session#resave
-    // * https://www.npmjs.com/package/express-session#saveuninitialized
-    resave: false,
-    saveUninitialized: false
+    rolling: true, // Refreshes cookie expiration on every request
+    resave: false, // Don't save session to store if unmodified
+    saveUninitialized: false  // Don't create session until something is stored
 }));
+
 
 app.use(flash());
 app.use(passport.initialize());
