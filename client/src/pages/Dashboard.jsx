@@ -1,117 +1,136 @@
-import { Disclosure } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-
-import UserDropdown from '../components/UserDropdown';
-
+import Navbar from '../components/Navbar';
+import LorenzAttractor from '../components/LorenzSimulation';
+import { useState } from 'react';
+import RangeSlider from '../components/RangeSlider';
 
 const Dashboard = () => {
-    const navigation = [
-        { name: 'Home', href: '/', current: true },
-        { name: 'Projects', href: '/projects', current: false },
-        { name: 'About', href: '/about', current: false },
-        { name: 'Contact', href: '/contact', current: false },
-    ];
+    const [simulationValues, setSimulationValues] = useState({
+        numAgents: 5,
+        sphereRadius: 0.5,
+        timeStep: 0.001,
+        startRange: 1,
+        linesOn: true,
+    });
+
+    const setSphereRadius = (e) => {
+        setSimulationValues({ ...simulationValues, sphereRadius: e.target.value });
+    };
+
+    const setStartRange = (e) => {
+        setSimulationValues({ ...simulationValues, startRange: e.target.value });
+    };
+
+    const setTimeStep = (e) => {
+        setSimulationValues({ ...simulationValues, timeStep: e.target.value });
+    };
+
+    const setNumAgents = (e) => {
+        setSimulationValues({ ...simulationValues, numAgents: e.target.value });
+    };
+
+    const toggleLines = () => {
+        setSimulationValues({ ...simulationValues, linesOn: !simulationValues.linesOn });
+    };
 
     return (
-        <Disclosure as="nav" className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
-            {({ open }) => (
-                <>
-                    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-                        <div className="relative flex h-16 items-center justify-between">
-                            <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                                {/* Mobile menu button*/}
-                                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2
-                                 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2
-                                  focus:ring-inset focus:ring-white">
-                                    <span className="sr-only">Open main menu</span>
-                                    {open ? (
-                                        <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                                    ) : (
-                                        <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                                    )}
-                                </Disclosure.Button>
-                            </div>
-                            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                                <div className="flex flex-shrink-0 items-center">
-                                    <img className="block h-8 w-auto lg:hidden"
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                        alt="Your Company"
-                                    />
-                                    <img className="hidden h-8 w-auto lg:block"
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                        alt="Your Company"
-                                    />
-                                </div>
-                                <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-                                    id="mobile-menu-2">
-                                    <ul className="flex flex-col p-4 pl-12 mt-4 border border-gray-100 rounded-lg
-                                     bg-gray-50 md:flex-row md:space-x-12 md:mt-0 md:text-sm md:font-medium
-                                      md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900
-                                       dark:border-gray-700">
-                                        <li>
-                                            <a href="/"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700"
-                                                aria-current="page">Home</a>
-                                        </li>
-                                        <li>
-                                            <a href="/projects"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700">Projects</a>
-                                        </li>
-                                        <li>
-                                            <a href="/about"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700">About</a>
-                                        </li>
-                                        <li>
-                                            <a href="/contact"
-                                                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100
-                                                 md:hover:bg-transparent md:hover:text-blue-700 md:p-0
-                                                  dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700
-                                                   dark:hover:text-white md:dark:hover:bg-transparent
-                                                    dark:border-gray-700">Contact</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            {/* Dropdown menu should be hidden if the user is not available,
-                            otherwise sign up / sign in button */}
+        <div>
+            <Navbar />
 
-                            <UserDropdown />
+            <h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-4xl
+            lg:text-4xl dark:text-white" style={{ textAlign: 'center', marginTop: '3%' }}>
+                Lorenz Attractor
+            </h1>
+            <p className="mb-1 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
+                A Lorenz Attractor is a type of strange attractor. It is a system of ordinary differential equations
+                first studied by Edward Lorenz. It is notable for having chaotic solutions for certain parameter values
+                and initial conditions, while being globally stable (basically, the system will always return to the
+                attractor, no matter how far away it starts).
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
+                height: '50%', marginTop: '3%', marginRight: '15px', marginBottom: '15%' }}>
+                <div style={{ width: '50%', height: '100%', display: 'block', marginRight: '5%' }}>
+                    <LorenzAttractor numAgents={simulationValues.numAgents}
+                        sphereRadius={simulationValues.sphereRadius}
+                        timeStep={simulationValues.timeStep}
+                        startRange={simulationValues.startRange}
+                        linesOn={simulationValues.linesOn}
+                    />
+                    <style>
+                        {`
+                            @media (min-width: 800px) {
+                                div[ref="containerRef"] {
+                                    width: 50%;
+                                    height: 50%;
+                                    margin-top: 25%;
+                                    margin-right: 25%;
+                                }
+                            }
+                        `}
+                    </style>
+                </div>
+                <div className="relative h-full w-1/4 absolute z-10 w-auto grid-cols-1 text-sm bg-white
+                border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-2 dark:bg-gray-700">
+                    <div className="p-6">
+                        <h3 className="text-xl font-bold mb-4">Toolbar</h3>
+                        <label htmlFor="default-range"
+                            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                            Lines
+                        </label>
+                        <div className="flex justify-center">
+                            <label className="relative inline-flex items-center cursor-pointer justify-center mb-4">
+                                <input type="checkbox" value="" className="sr-only peer" onClick={toggleLines}
+                                    checked={simulationValues.linesOn} ></input>
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4
+                                    peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer
+                                    dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white
+                                    after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+                                    after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
+                                    after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                        </div>
+                        <hr className="w-48 h-px mx-auto my-2 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <label htmlFor="default-range"
+                            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                            Sphere Radius
+                        </label>
+                        <div className="flex justify-center">
+                            <RangeSlider value={simulationValues.sphereRadius}
+                                onChange={setSphereRadius} min={0.1} max={1} step={0.1} />
+                        </div>
+                        <hr className="w-48 h-px mx-auto my-2 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <label htmlFor="default-range"
+                            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                            Start Range
+                        </label>
+                        <div className="flex justify-center">
+                            <RangeSlider value={simulationValues.startRange}
+                                onChange={setStartRange} min={0.1} max={1} step={0.1} />
+                        </div>
+                        <hr className="w-48 h-px mx-auto my-2 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <label htmlFor="default-range"
+                            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                            Time Step
+                        </label>
+                        <div className="flex justify-center">
+                            <RangeSlider value={simulationValues.timeStep}
+                                onChange={setTimeStep} min={0.0005} max={0.01} step={0.001} />
+                        </div>
+                        <hr className="w-48 h-px mx-auto my-2 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <label htmlFor="default-range"
+                            className="block mb-1 mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                            Number of Spheres
+                        </label>
+                        <div className="flex justify-center">
+                            <RangeSlider value={simulationValues.numAgents}
+                                onChange={setNumAgents} min={1} max={20} step={1} />
                         </div>
                     </div>
-
-                    <Disclosure.Panel className="sm:hidden">
-                        <div className="space-y-1 px-2 pt-2 pb-3">
-                            {navigation.map((item) => (
-                                <Disclosure.Button
-                                    key={item.name}
-                                    as="a"
-                                    href={item.href}
-                                    className={
-                                        `${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700' +
-                                            ' hover:text-white'} block px-3 py-2 rounded-md text-base font-medium`
-                                    }
-                                    aria-current={item.current ? 'page' : undefined}
-                                >
-                                    {item.name}
-                                </Disclosure.Button>
-                            ))}
-                        </div>
-                    </Disclosure.Panel>
-                </>
-            )}
-        </Disclosure>
+                </div>
+            </div>
+            <br></br>
+        </div>
     );
 };
 
