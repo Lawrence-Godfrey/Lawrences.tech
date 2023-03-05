@@ -46,8 +46,11 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
             {
-                test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+                test: /\.(png|jpg)$/i,
                 type: 'asset/resource',
+                generator: {
+                    filename: 'images/[name]-[hash][ext]',
+                },
             },
             {
                 test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
@@ -59,6 +62,7 @@ module.exports = {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './public/index.html',
+            favicon: './public/favicon.png',
         }),
         new InterpolateHtmlPlugin({
             PUBLIC_URL: '', // can modify `static` to another name or get it from `process`
