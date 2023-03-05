@@ -1,12 +1,11 @@
 import React from 'react';
+import logo from '../assets/images/logo-large.png';
 
-const Logo = () => {
+const Logo = ({ className = 'mx-auto w-96 mb-20' }) => {
     return (
-        <a href="/" className="flex items-center justify-center mb-6 text-2xl
-             font-semibold text-gray-900 dark:text-white mr-6">
-            <img className="w-8 h-8 mr-2"
-                alt="logo"/>
-            Lawrences.tech
+        <a href="/" >
+            <img className={ className } src={logo}
+                alt="logo" crossOrigin="anonymous" />
         </a>
     );
 };
