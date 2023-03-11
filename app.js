@@ -10,7 +10,7 @@ import cors from 'cors';
 import { authRouter, userRouter } from './routes/index.js';
 import requestLogger from './middleware/requestLogger.js';
 import logger from './utils/logger.js';
-import passport from './controllers/oauthController.js';
+import passport from './authenticationStrategies/index.js';
 
 dotenv.config()
 let MongoDBStore = mongoDBSession(session);

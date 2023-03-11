@@ -4,7 +4,23 @@ import bcrypt from 'bcryptjs';
 
 
 /**
- * Model a User instance.
+ * @class User
+ * @property {string} username - The username of the user.
+ * @property {string} email - The email address of the user.
+ * @property {string} password - The user's password.
+ * @property {boolean} isVerified - Whether the user has verified their email.
+ * @property {boolean} isAdmin - Whether the user is an admin.
+ * @property {boolean} isActive - Whether the user is active.
+ * @property {string} firstName - The first name of the user.
+ * @property {string} lastName - The last name of the user.
+ * @property {string} avatar - The avatar of the user (url). Defaults to a gravatar.
+ * @property {string} location - The location of the user (city, state, country).
+ * @property {string} oauthType - The type of OAuth used to create the user (google, github, local).
+ * @property {string} oauthId - The id of the user in the OAuth provider.
+ * @property {Date} createdAt - The date the user was created.
+ * @property {Date} updatedAt - The date the user was last updated.
+ * @property {string} resetPasswordToken - The token used to reset the user's password.
+ * @property {Date} resetPasswordExpires - The date the reset password token expires.
  */
 const UserSchema = new mongoose.Schema({
     username: {
@@ -70,6 +86,12 @@ const UserSchema = new mongoose.Schema({
     oauthId: {
         type: String
     },
+    resetPasswordToken: {
+        type: String
+    },
+    resetPasswordExpires: {
+        type: Date
+    }
 },{
     timestamps: true
 });
@@ -78,6 +100,10 @@ const UserSchema = new mongoose.Schema({
 /**
  * Perform any necessary pre-save operations.
  * Includes hashing the password.
+ * @memberof User
+ * @instance
+ * @method pre
+ * @returns {Promise<void>} A promise that resolves when the pre-save operations are complete.
  */
 UserSchema.pre('save', async function () {
     if (this.isModified('password')) {
@@ -89,7 +115,8 @@ UserSchema.pre('save', async function () {
 
 /**
  * Verify that a password is correct for a User instance.
- * @param {string} password    The password to verify.
+ * @param {string} password - The password to verify.
+ * @param {function} callback - The callback to call when the query is complete.
  * @memberof User
  * @instance
  * @method verifyPassword
@@ -104,7 +131,15 @@ UserSchema.methods.verifyPassword = function (password, callback) {
     });
 }
 
-// Find user by id
+/**
+ * Find a user by their ID.
+ * @param {string} id - The ID of the user to find.
+ * @param {function} callback - The callback to call when the query is complete.
+ * @memberof User
+ * @static
+ * @method findByEmail
+ * @returns {Promise<User>} A promise that resolves with the user that matches the ID.
+ */
 UserSchema.statics.findById = function (id, callback) {
     return this.findOne({ _id: id }, callback);
 }
