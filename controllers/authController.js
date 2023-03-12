@@ -294,25 +294,27 @@ const githubLogin = (req, res) => {
  * @param provider The provider to authenticate with
  * @returns {function(*, *): *}
  */
-const callback = (provider) => (req, res) => {
-    passport.authenticate(
-        provider, { failureRedirect: '/login', failureMessage: true }, (err, user) => {
-            if (err) {
-                return res.status(500).json({ message: 'Server Error', status: 'error' });
-            }
-            if (!user) {
-                return res.status(401).json({ message: 'Unauthorized', status: 'error' });
-            }
-            req.login(user, (err) => {
+const callback = (provider) => {
+    return (req, res) => {
+        passport.authenticate(
+            provider, { failureRedirect: '/login', failureMessage: true }, (err, user) => {
                 if (err) {
                     return res.status(500).json({ message: 'Server Error', status: 'error' });
                 }
+                if (!user) {
+                    return res.status(401).json({ message: 'Unauthorized', status: 'error' });
+                }
+                req.login(user, (err) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Server Error', status: 'error' });
+                    }
 
-                return res.redirect(req.origin);
-            });
-        },
-    );
-};
+                    return res.redirect(req.origin);
+                });
+            },
+        );
+    };
+}
 
 
 export {
