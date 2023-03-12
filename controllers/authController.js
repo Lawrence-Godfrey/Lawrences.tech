@@ -1,7 +1,11 @@
 import passport from 'passport';
+import dotenv from 'dotenv';
 
 import User from '../models/user.js';
 import UserSerializer from '../serializers/userSerializer.js';
+
+
+dotenv.config()
 
 
 /**
@@ -292,28 +296,38 @@ const githubLogin = (req, res) => {
 /**
  * Redirect the user to the home page after authentication.
  * @param provider The provider to authenticate with
+ * @param req The request object
+ * @param res The response object
  * @returns {function(*, *): *}
  */
-const callback = (provider) => {
-    return (req, res) => {
-        passport.authenticate(
-            provider, { failureRedirect: '/login', failureMessage: true }, (err, user) => {
+const callback = (provider, req, res) => {
+    passport.authenticate(
+        provider, { failureRedirect: '/login', failureMessage: true }, (err, user) => {
+            if (err) {
+                return res.status(500).json({ message: 'Server Error', status: 'error' });
+            }
+            if (!user) {
+                return res.status(401).json({ message: 'Unauthorized', status: 'error' });
+            }
+            req.login(user, (err) => {
                 if (err) {
                     return res.status(500).json({ message: 'Server Error', status: 'error' });
                 }
-                if (!user) {
-                    return res.status(401).json({ message: 'Unauthorized', status: 'error' });
-                }
-                req.login(user, (err) => {
-                    if (err) {
-                        return res.status(500).json({ message: 'Server Error', status: 'error' });
-                    }
 
-                    return res.redirect(req.origin);
-                });
-            },
-        );
-    };
+                return res.redirect(`${process.env.CLIENT_URL}`);
+            });
+        },
+    )(req, res);
+}
+
+
+const googleCallback = (req, res) => {
+    return callback('google', req, res);
+}
+
+
+const githubCallback = (req, res) => {
+    return callback('github', req, res);
 }
 
 
@@ -324,7 +338,8 @@ export {
     getCurrentUser,
     googleLogin,
     githubLogin,
-    callback,
+    googleCallback,
+    githubCallback,
     forgotPassword,
     resetPassword,
 };

@@ -7,7 +7,8 @@ import {
     localLogin,
     getCurrentUser,
     googleLogin,
-    callback,
+    googleCallback,
+    githubCallback,
     githubLogin,
     forgotPassword,
     resetPassword,
@@ -27,9 +28,9 @@ router.route('/forgotPassword').post(forgotPassword);
 router.route('/resetPassword/:resetToken').put(resetPassword);
 
 router.route('/oauth/login/google').get(googleLogin);
-router.route('/oauth/callback/google').get(callback('google'));
+router.route('/oauth/callback/google').get(googleCallback);
 
 router.route('/oauth/login/github').get(githubLogin);
-router.route('/oauth/callback/github').get(callback('github'));
+router.route('/oauth/callback/github').get(githubCallback);
 
 export default router;
