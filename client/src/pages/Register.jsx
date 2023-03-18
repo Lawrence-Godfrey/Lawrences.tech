@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, UsernameField, PasswordField, EmailField, Logo } from '../components';
+import {
+    Alert,
+    UsernameField,
+    PasswordField,
+    EmailField,
+    Logo,
+    SubmitButton,
+    GitHubOAuthButton,
+    GoogleOAuthButton,
+    FormDivider,
+} from '../components';
 import { useAppContext } from '../context/appContext';
 import { useNavigate } from 'react-router-dom';
-import SubmitButton from '../components/SubmitButton';
-import GitHubOAuthButton from '../components/GitHubOAuthButton';
-import GoogleOAuthButton from '../components/GoogleOAuthButton';
-import FormDivider from '../components/FormDivider';
 
 
 const Register = () => {
@@ -81,7 +87,7 @@ const Register = () => {
 
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
-            <Logo />
+            <Logo/>
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen
              lg:py-0 max-h-screen">
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0
@@ -92,11 +98,11 @@ const Register = () => {
                             Create an Account
                         </h1>
 
-                        { showAlert && <Alert /> }
+                        {showAlert && <Alert/>}
 
                         <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
-                            <UsernameField />
-                            <EmailField />
+                            <UsernameField/>
+                            <EmailField/>
                             <PasswordField label="Password" htmlFor="password" id="password" name="password"
                                 onChange={({ target }) => {
                                     handleUserInput(target.name, target.value);
@@ -107,16 +113,16 @@ const Register = () => {
                                 onChange={({ target }) => {
                                     handleUserInput(target.name, target.value);
                                 }}
-                                error={formError.confirmPassword} />
+                                error={formError.confirmPassword}/>
 
-                            <SubmitButton text="Create an Account" isLoading={isLoading} />
+                            <SubmitButton text="Create an Account" isLoading={isLoading}/>
 
                         </form>
 
-                        <FormDivider text="OR" />
+                        <FormDivider text="OR"/>
 
-                        <GoogleOAuthButton text="Sign Up with Google" />
-                        <GitHubOAuthButton text="Sign Up with GitHub" />
+                        <GoogleOAuthButton text="Sign Up with Google"/>
+                        <GitHubOAuthButton text="Sign Up with GitHub"/>
 
 
                         <br></br>
@@ -124,7 +130,7 @@ const Register = () => {
                             Already have an account?&nbsp;
                             <a href="/login" className="font-medium text-primary-600 hover:underline
                              dark:text-primary-500">
-                                 Login here
+                                Login here
                             </a>
                         </p>
                     </div>

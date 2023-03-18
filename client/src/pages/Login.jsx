@@ -1,11 +1,17 @@
 import React from 'react';
 import { useAppContext } from '../context/appContext';
 
-import { Alert, PasswordField, EmailField, Logo } from '../components';
-import SubmitButton from '../components/SubmitButton';
-import FormDivider from '../components/FormDivider';
-import GoogleOAuthButton from '../components/GoogleOAuthButton';
-import GitHubOAuthButton from '../components/GitHubOAuthButton';
+import {
+    Alert,
+    PasswordField,
+    EmailField,
+    Logo,
+    SubmitButton,
+    FormDivider,
+    GoogleOAuthButton,
+    GitHubOAuthButton,
+} from '../components';
+
 
 const Login = () => {
     // Global variables
@@ -34,7 +40,7 @@ const Login = () => {
 
     return (
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen overflow-y-auto h-screen pt-16 pb-16">
-            <Logo className="mx-auto w-96 mb-1" />
+            <Logo className="mx-auto w-96 mb-1"/>
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen
              lg:py-0 max-h-screen">
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md
@@ -45,13 +51,13 @@ const Login = () => {
                             Sign In
                         </h1>
 
-                        { showAlert && <Alert /> }
+                        {showAlert && <Alert/>}
 
                         <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
-                            <EmailField />
+                            <EmailField/>
                             <PasswordField label="Password" htmlFor="password" id="password" name="password"/>
 
-                            <SubmitButton text="Sign In" isLoading={isLoading} />
+                            <SubmitButton text="Sign In" isLoading={isLoading}/>
 
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
@@ -59,7 +65,7 @@ const Login = () => {
                                         className="h-4 w-4 rounded border-gray-300
                                          text-primary-600 focus:ring-primary-500"/>
                                     <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
-                                            Remember me
+                                        Remember me
                                     </label>
                                 </div>
 
@@ -71,7 +77,7 @@ const Login = () => {
                             </div>
                         </form>
 
-                        <FormDivider text="OR" />
+                        <FormDivider text="OR"/>
 
                         <GoogleOAuthButton text="Sign In with Google"/>
                         <GitHubOAuthButton text="Sign In with GitHub"/>
