@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import logo from '../assets/images/logo.png';
 
-import UserDropdown from '../components/UserDropdown';
+import { UserDropdown } from '../components';
 
 
 const Dashboard = () => {

@@ -1,7 +1,5 @@
-import Navbar from '../components/Navbar';
-import LorenzAttractor from '../components/LorenzSimulation';
+import { Navbar, Footer, LorenzAttractor, RangeSlider } from '../components';
 import { useState } from 'react';
-import RangeSlider from '../components/RangeSlider';
 import { Accordion } from 'flowbite-react';
 
 const Dashboard = () => {
@@ -192,6 +190,8 @@ const Dashboard = () => {
             </Accordion>
 
             <br></br>
+
+            <Footer />
         </div>
     );
 };
