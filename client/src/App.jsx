@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Register, Login, Error, Dashboard, Profile, PrivacyPolicy } from './pages';
+import { Register, Login, Error, Dashboard, Profile, PrivacyPolicy, About } from './pages';
 
 
 /**
@@ -16,6 +16,7 @@ function App() {
                 <Route path="/register" element={ <Register /> } />
                 <Route path="/login" element={ <Login /> } />
                 <Route path="/profile" element={ <Profile /> } />
+                <Route path="/about" element={ <About /> } />
                 <Route path="/privacy-policy" element={ <PrivacyPolicy /> } />
                 <Route path="*" element={ <Error /> } />
             </Routes>
