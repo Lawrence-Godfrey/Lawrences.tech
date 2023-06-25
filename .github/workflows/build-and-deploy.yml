@@ -31,6 +31,13 @@ jobs:
           cd client
           npx webpack build --env production --mode production --config ./webpack.config.prod.js
 
+      # Upload build artifacts
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: client/dist/
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -39,6 +46,13 @@ jobs:
       # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
+
+      # Download build artifacts
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+          path: client/dist/
 
       # Deploy the build to prod server
       - name: Deploy to server
