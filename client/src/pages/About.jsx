@@ -14,7 +14,6 @@ const About = () => {
                         <p className="text-gray-600 mb-8">
                             This site, built using the MERN (MongoDB, Express, React, Node.js) stack,
                              is intended to serve as a portfolio of various projects I&apos;ve worked on.
-                            in my free time.
                         </p>
 
                         <div
