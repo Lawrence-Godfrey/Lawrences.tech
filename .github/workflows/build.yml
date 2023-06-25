@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,15 +25,15 @@ jobs:
           cd client
           npm ci
 
-      # Install and cache dependencies for server
-      - name: Cache Server Dependencies
-        uses: actions/cache@v2
-        with:
-          path: server/node_modules
-          key: ${{ runner.OS }}-server-${{ hashFiles('server/package-lock.json') }}
-
       # Build the client
       - name: Build Client
         run: |
           cd client
           npx webpack build --env production --mode production --config ./webpack.config.prod.js
+
+      # Upload build artifacts
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: client/dist/
