@@ -61,8 +61,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "client/dist/*"
+          source: "client/dist"
           target: "/var/www/html"
+          strip_components: 1
 
       # restart NGINX
       - name: Restart NGINX
