@@ -1,0 +1,39 @@
+name: Build Workflow
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Install and cache dependencies for client
+      - name: Cache Client Dependencies
+        uses: actions/cache@v2
+        with:
+          path: client/node_modules
+          key: ${{ runner.OS }}-client-${{ hashFiles('client/package-lock.json') }}
+
+      - name: Install Client Dependencies
+        run: |
+          cd client
+          npm ci
+
+      # Install and cache dependencies for server
+      - name: Cache Server Dependencies
+        uses: actions/cache@v2
+        with:
+          path: server/node_modules
+          key: ${{ runner.OS }}-server-${{ hashFiles('server/package-lock.json') }}
+
+      # Build the client
+      - name: Build Client
+        run: |
+          cd client
+          npx webpack build --env production --mode production --config ./webpack.config.prod.js

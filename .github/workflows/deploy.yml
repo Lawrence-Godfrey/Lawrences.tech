@@ -1,74 +1,34 @@
-name: Deployment Workflow
 
+
+name: Deploy Workflow
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout
-        uses: actions/checkout@v2
+    # Checkout the repository
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      # Install and cache dependencies for client
-      - name: Cache Client Dependencies
-        uses: actions/cache@v2
-        with:
-          path: client/node_modules
-          key: ${{ runner.OS }}-client-${{ hashFiles('client/package-lock.json') }}
+    # Deploy the build to prod server
+    - name: Deploy to server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        source: "client/dist/*"
+        target: "/var/www/html"
 
-      - name: Install Client Dependencies
-        run: |
-          cd client
-          npm ci
-
-      # Install and cache dependencies for server
-      - name: Cache Server Dependencies
-        uses: actions/cache@v2
-        with:
-          path: server/node_modules
-          key: ${{ runner.OS }}-server-${{ hashFiles('server/package-lock.json') }}
-
-      # Build the client
-      - name: Build Client
-        run: |
-          cd client
-          npx webpack build --env production --mode production --config ./webpack.config.prod.js
-
-      # Wait for authorization
-      - name: Hold for approval
-        uses: actions/github-script@0.9.0
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const issue_number = context.issue.number
-            await github.pulls.createReviewRequest({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: issue_number,
-              reviewers: ['Lawrence-Godfrey']
-            })
-
-      # Deploy the build to prod server
-      - name: Deploy to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "client/dist/*"
-          target: "/var/www/html"
-
-      # restart NGINX
-      - name: Restart NGINX
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            sudo systemctl restart nginx
+    # restart NGINX
+    - name: Restart NGINX
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          sudo systemctl restart nginx
