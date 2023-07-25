@@ -5,5 +5,6 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import PrivacyPolicy from './PrivacyPolicy';
 import About from './About';
+import Article from './Article';
 
-export { Error, Register, Login, Dashboard, Profile, PrivacyPolicy, About };
+export { Error, Register, Login, Dashboard, Profile, PrivacyPolicy, About, Article };
