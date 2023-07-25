@@ -9,6 +9,7 @@
     "client": "npm start --prefix ../client",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
+  "proxy": "http://localhost:5050",
   "type": "module",
   "repository": {
     "type": "git",
