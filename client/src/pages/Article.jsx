@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import { Footer, Navbar } from '../components';
 import { useParams } from 'react-router-dom';
 import ArticleView from '../components/ArticleView';
+import { fetchArticle } from '../api/articles';
+import Error500 from './Error500';
 
-
-const Article = () => {
+const ArticlePage = () => {
     const { id } = useParams(); // Get the article ID from the URL
 
     const [article, setArticle] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchArticle = async () => {
-            try {
-                const response = await axios.get(`/api/articles/${id}`);
-                setArticle(response.data.article);
-            } catch (error) {
-                console.error('Failed to fetch article', error);
-            }
-        };
-
-        fetchArticle();
+        fetchArticle(id)
+            .then((article) => setArticle(article))
+            .catch((err) => setError(err));
     }, [id]); // Rerun the effect when the id changes
+
+    if (error) {
+        return <Error500 />;
+    }
 
     if (!article) {
         return <p>Loading...</p>; // Show a loading message or spinner while the article is loading
@@ -38,4 +36,4 @@ const Article = () => {
 };
 
 
-export default Article;
+export default ArticlePage;
