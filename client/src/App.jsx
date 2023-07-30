@@ -1,6 +1,8 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Register, Login, Error, Dashboard, Profile, PrivacyPolicy, About, Article } from './pages';
+import {
+    Register, Login, Error404, Dashboard, Profile, PrivacyPolicy, About, ArticlePage, ArticlesPage, ArticleEdit,
+} from './pages';
 
 
 /**
@@ -18,8 +20,10 @@ function App() {
                 <Route path="/profile" element={ <Profile /> } />
                 <Route path="/about" element={ <About /> } />
                 <Route path="/privacy-policy" element={ <PrivacyPolicy /> } />
-                <Route path="/article/:id" element={ <Article /> } />
-                <Route path="*" element={ <Error /> } />
+                <Route path="/articles" element={ <ArticlesPage /> } />
+                <Route path="/articles/:id" element={ <ArticlePage /> } />
+                <Route path="/articles/:id/edit" element={ <ArticleEdit /> } />
+                <Route path="*" element={ <Error404 /> } />
             </Routes>
         </BrowserRouter>
     );
