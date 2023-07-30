@@ -18,7 +18,7 @@ listed below:
  - [x] Increase security by adding various security headers to all responses (CSP for XSS, cross-origin embedder and 
    frame policies for clickjacking, etc.)
    - [ ] Use latest CSP script-src directive to allow inline scripts to be executed using a nonce.
- - [ ] Setup a CI/CD pipeline which builds and tests the project on every push, and deploys the project
+ - [x] Setup a CI/CD pipeline which builds and tests the project on every push, and deploys the project
    to the server on every merge to master.
  - [ ] Use Redux to manage state on the frontend instead of React's Context API.
    - [ ] And Redux-Saga for async requests.
