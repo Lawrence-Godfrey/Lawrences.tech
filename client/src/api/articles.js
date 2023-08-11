@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { fetchUser } from './users';
 
 
 /**
@@ -11,6 +12,21 @@ import axios from 'axios';
 export async function fetchArticles() {
     const response = await axios.get('/api/articles');
     return response.data.articles;
+}
+
+/**
+ * Fetches all articles from the server with their authors
+ * @return {Promise<*>}
+ * @throws {Error}
+ * @example
+ * const articles = await fetchArticlesWithAuthors();
+ */
+export async function fetchArticlesWithAuthors() {
+    const articles = await fetchArticles();
+    for (let i = 0; i < articles.length; i++) {
+        articles[i].author = await fetchUser(articles[i].author);
+    }
+    return articles;
 }
 
 /**
