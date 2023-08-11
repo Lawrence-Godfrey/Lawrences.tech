@@ -1,24 +1,42 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const ArticleListView = ({ articles }) => {
+    /**
+     * Returns the number of days ago the article was published
+     * @param {string} dateString - The date the article was published
+     * @return {number}
+     */
+    function daysAgo(dateString) {
+        const articleDate = new Date(dateString);
+        const currentDate = new Date();
+        const diffInMilliseconds = currentDate - articleDate;
+        const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
+        return Math.floor(diffInMilliseconds / oneDayInMilliseconds);
+    }
+
+
     return (
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-            <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+        <div className="py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-6">
+            <div className="text-center mb-20">
                 <h2
                     className="mb-4 text-3xl lg:text-4xl tracking-tight
-                        font-extrabold text-gray-900 dark:text-white">
-                        Articles & Blog Posts
+                            font-extrabold text-gray-900 dark:text-white">
+                            Articles & Blog Posts
                 </h2>
-                <p className="font-light text-gray-500 sm:text-xl dark:text-gray-400">
-                        Find articles about about whatever people are writing articles about these days.
+                <p className="font-light text-gray-500 mb-8 sm:text-xl dark:text-gray-400">
+                            Find articles about about whatever people are writing articles about these days.
                 </p>
+
+                <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
             </div>
-            <div className="grid gap-8">
-                {articles.map((article) => (
+
+            {articles.map((article) => (
+                <div
+                    key={article.id}
+                >
                     <article
-                        className="p-6 bg-white rounded-lg border border-gray-200 shadow-md
-                            dark:bg-gray-800 dark:border-gray-700"
-                        key={article.id}
+                        className="p-6 rounded-lg"
                     >
                         <div
                             className="flex justify-between items-center mb-5 text-gray-500">
@@ -35,7 +53,9 @@ const ArticleListView = ({ articles }) => {
                                     </path><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"></path></svg>
                                         Article
                             </span>
-                            <span className="text-sm">14 days ago</span>
+                            <span className="text-sm">
+                                {daysAgo(article.createdAt)} days ago
+                            </span>
                         </div>
                         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                             <a href={`/articles/${article.id}`} className="hover:underline">
@@ -43,17 +63,20 @@ const ArticleListView = ({ articles }) => {
                             </a>
                         </h2>
                         <p className="mb-5 font-light text-gray-500 dark:text-gray-400">
-                            {article.description}
+                            <ReactMarkdown>
+                                {article.content.length > 300 ? article.content.substring(0, 300) +
+                                    '...' : article.content}
+                            </ReactMarkdown>
                         </p>
                         <div className="flex justify-between items-center">
                             <div className="flex items-center space-x-4">
                                 <img
                                     className="w-7 h-7 rounded-full"
-                                    src="https://flowbite.s3.amazonaws.com/blocks/
-                                        marketing-ui/avatars/bonnie-green.png"
-                                    alt="Bonnie Green avatar" />
+                                    src={article.author.avatar}
+                                    alt="avatar"
+                                />
                                 <span className="font-medium dark:text-white">
-                              Bonnie Green
+                                    {article.author.firstName + ' ' + article.author.lastName}
                                 </span>
                             </div>
                             <a href={`/articles/${article.id}`} className="inline-flex items-center font-medium
@@ -70,8 +93,9 @@ const ArticleListView = ({ articles }) => {
                             </a>
                         </div>
                     </article>
-                ))}
-            </div>
+                    <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                </div>
+            ))}
         </div>
     );
 };

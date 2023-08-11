@@ -1,7 +1,7 @@
 
 import { ArticleListView, Footer, Navbar } from '../components';
 import { useEffect, useState } from 'react';
-import { fetchArticles } from '../api/articles';
+import { fetchArticlesWithAuthors } from '../api/articles';
 import Error500 from './Error500';
 
 
@@ -10,7 +10,7 @@ const ArticlesPage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchArticles()
+        fetchArticlesWithAuthors()
             .then((articles) => setArticles(articles))
             .catch((err) => setError(err));
     }, []);
