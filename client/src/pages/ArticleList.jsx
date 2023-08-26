@@ -22,9 +22,7 @@ const ArticlesPage = () => {
     return (
         <div>
             <Navbar />
-            <div className="bg-gray-100 flex min-h-screen">
-                <ArticleListView articles={articles} />
-            </div>
+            <ArticleListView articles={articles} />
             <Footer />
         </div>
     );

@@ -17,29 +17,22 @@ const ArticleListView = ({ articles }) => {
 
 
     return (
-        <div className="py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-6">
+        <div className="py-8 px-4 mx-auto max-w-screen-md min-h-screen lg:py-16 lg:px-6">
             <div className="text-center mb-20">
-                <h2
-                    className="mb-4 text-3xl lg:text-4xl tracking-tight
-                            font-extrabold text-gray-900 dark:text-white">
-                            Articles & Blog Posts
+                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                    Articles & Blog Posts
                 </h2>
                 <p className="font-light text-gray-500 mb-8 sm:text-xl dark:text-gray-400">
-                            Find articles about about whatever people are writing articles about these days.
+                    Find articles about about whatever people are writing articles about these days.
                 </p>
 
                 <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
             </div>
 
             {articles.map((article) => (
-                <div
-                    key={article.id}
-                >
-                    <article
-                        className="p-6 rounded-lg"
-                    >
-                        <div
-                            className="flex justify-between items-center mb-5 text-gray-500">
+                <div key={article.id}>
+                    <article className="p-6 rounded-lg">
+                        <div className="flex justify-between items-center mb-5 text-gray-500">
                             <span
                                 className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex
                                     items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
@@ -76,7 +69,7 @@ const ArticleListView = ({ articles }) => {
                                     alt="avatar"
                                 />
                                 <span className="font-medium dark:text-white">
-                                    {article.author.firstName + ' ' + article.author.lastName}
+                                    {article.author.firstName} {article.author.lastName}
                                 </span>
                             </div>
                             <a href={`/articles/${article.id}`} className="inline-flex items-center font-medium
