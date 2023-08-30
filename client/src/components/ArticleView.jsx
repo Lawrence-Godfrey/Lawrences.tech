@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
 
 const ArticleView = ({ article }) => {
     const [author, setAuthor] = useState(null);
@@ -30,14 +32,20 @@ const ArticleView = ({ article }) => {
                     { article.title }
                 </h1>
 
-                <div className="flex items-center space-x-4">
-                    <img className="w-10 h-10 rounded-full" src={author.avatar} alt={author.username}></img>
-                    <div className="font-medium dark:text-white">
-                        <div>{author.firstName} {author.lastName}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Published {formattedDate}
+                <div className="flex items-center justify-between space-x-4">
+                    <div className="flex items-center space-x-4">
+                        <img className="w-10 h-10 rounded-full" src={author.avatar} alt={author.username}></img>
+                        <div className="font-medium dark:text-white">
+                            <div>{author.firstName} {author.lastName}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            Published {formattedDate}
+                            </div>
                         </div>
                     </div>
+                    <Link to={`/articles/${article.id}/edit`}>
+                        <PencilSquareIcon className="h-6 w-6 text-gray-500 hover:text-gray-700
+                        dark:text-white dark:hover:text-gray-300" />
+                    </Link>
                 </div>
 
                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>

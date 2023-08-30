@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Footer, Navbar } from '../components';
 import { useParams } from 'react-router-dom';
 import ArticleEditor from '../components/ArticleEditor';
-import { fetchArticle, updateArticle } from '../api/articles';
+import { fetchArticle } from '../api/articles';
 import Error500 from './Error500';
 
 const ArticleEditPage = () => {
@@ -29,7 +29,7 @@ const ArticleEditPage = () => {
     return (
         <div>
             <Navbar />
-            <ArticleEditor article={article} onSubmit={updateArticle} />
+            <ArticleEditor article={article} />
             <Footer />
         </div>
     );
