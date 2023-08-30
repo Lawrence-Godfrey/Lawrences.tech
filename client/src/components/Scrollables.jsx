@@ -2,10 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import { preventScrollChaining } from '../utils';
 
 
-const ScrollableDiv = ({ children, className }) => {
-    const ref = useRef(null);
+const ScrollableDiv = React.forwardRef((props, ref) => {
+    const { children, className } = props;
 
     useEffect(() => {
+        if (!ref) {
+            return;
+        }
         ref.current.addEventListener('wheel', preventScrollChaining);
         return () => {
             ref.current.removeEventListener('wheel', preventScrollChaining);
@@ -17,10 +20,12 @@ const ScrollableDiv = ({ children, className }) => {
             {children}
         </div>
     );
-};
+});
+
+ScrollableDiv.displayName = 'ScrollableDiv';
 
 
-const ScrollableTextArea = ({ value, onChange, className }) => {
+const ScrollableTextArea = ({ value, onChange, onClick, className }) => {
     const ref = useRef(null);
 
     useEffect(() => {
@@ -36,6 +41,7 @@ const ScrollableTextArea = ({ value, onChange, className }) => {
             className={className}
             value={value}
             onChange={onChange}
+            onClick={onClick}
         />
     );
 };

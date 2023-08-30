@@ -1,29 +1,52 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { ScrollableTextArea, ScrollableDiv } from './Scrollables';
+import MarkdownEditor from './MarkdownEditor';
+import EditableArticleTitle from './EditableArticleTitle';
+import { useCallback, useState } from 'react';
+import { updateArticle } from '../api/articles';
 
-const ArticleEditor = ({ article, onSubmit }) => {
-    const [markdown, setMarkdown] = useState('');
+const ArticleEditor = ({ article }) => {
+    const [title, setTitle] = useState(article.title);
+    const [content, setContent] = useState(article.content);
+
+    const handleTitleChange = useCallback((newTitle) => {
+        setTitle(newTitle);
+    }, []);
+
+    const handleContentChange = useCallback((newContent) => {
+        setContent(newContent);
+    }, []);
+
+    const onSubmit = async () => {
+        console.log(`Submitting ${title} and ${content}`);
+        await updateArticle(article.id, {
+            title,
+            content,
+        });
+        window.location.href = `/articles/${article.id}`;
+    };
 
     return (
-        <div className="flex">
-            {/* Editor */}
-            <div className="flex-1 p-4">
-                <h2 className="text-xl mb-4">Editor</h2>
-                <ScrollableTextArea
-                    className="w-full h-[700px] p-4 rounded border-0 resize-none focus:ring-0"
-                    value={markdown}
-                    onChange={(e) => setMarkdown(e.target.value)}
-                />
+        <div className="relative">
+            <div className="flex justify-end items-start mt-8 mr-24">
+                <button
+                    className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900
+                focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700
+                focus:z-10 focus:ring-4 focus:ring-gray-200"
+                    onClick={onSubmit}
+                >
+                Publish
+                </button>
+                <button
+                    className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
+                focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 "
+                    onClick={() => window.location.href = `/articles/${article.id}`}
+                >
+                Cancel
+                </button>
             </div>
 
-            {/* Preview */}
-            <div className="flex-1 p-4 rounded">
-                <h2 className="text-xl mb-4">Preview</h2>
-                <ScrollableDiv className="prose overflow-y-auto h-[700px] p-4 rounded">
-                    <ReactMarkdown>{markdown}</ReactMarkdown>
-                </ScrollableDiv>
-            </div>
+            <EditableArticleTitle defaultText={title} onChange={handleTitleChange}/>
+            <div className="h-4"></div>
+            <MarkdownEditor defaultText={content} onChange={handleContentChange}/>
         </div>
     );
 };

@@ -41,3 +41,17 @@ export async function fetchArticle(id) {
     const response = await axios.get(`/api/articles/${id}`);
     return response.data.article;
 }
+
+/**
+ * Updates the article on the server
+ * @param {string} id - The id of the article to update
+ * @param {Object} article - The article data to update
+ * @return {Promise<*>}
+ * @throws {Error}
+ * @example
+ * const article = await updateArticle('1234', { title: 'New Title' });
+ */
+export async function updateArticle(id, article) {
+    const response = await axios.patch(`/api/articles/${id}`, article);
+    return response.data.article;
+}
