@@ -23,6 +23,8 @@ function App() {
                 <Route path="/articles" element={ <ArticlesPage /> } />
                 <Route path="/articles/:id" element={ <ArticlePage /> } />
                 <Route path="/articles/:id/edit" element={ <ArticleEdit /> } />
+                <Route path="/articles/new" element={ <ArticleEdit /> } />
+                {/* 404 page must be the last route in the list. */}
                 <Route path="*" element={ <Error404 /> } />
             </Routes>
         </BrowserRouter>

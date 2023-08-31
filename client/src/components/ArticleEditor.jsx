@@ -1,11 +1,19 @@
 import MarkdownEditor from './MarkdownEditor';
 import EditableArticleTitle from './EditableArticleTitle';
-import { useCallback, useState } from 'react';
-import { updateArticle } from '../api/articles';
+import { useCallback, useEffect, useState } from 'react';
+import { createArticle, updateArticle } from '../api/articles';
+import { useAppContext } from '../context/appContext';
 
 const ArticleEditor = ({ article }) => {
-    const [title, setTitle] = useState(article.title);
-    const [content, setContent] = useState(article.content);
+    const { user } = useAppContext();
+
+    const defaultTitle = 'Your Title';
+    const defaultContent = 'Add your Markdown here\n\nFor example: \n**bold** \n*italic* \n`code`\n\n# Heading 1\n' +
+        '## Heading 2\n### Heading 3\n\n- list item 1\n- list item 2\n- list item 3\n\n1. list item 1\n2. list ' +
+        'item 2\n3. list item 3\n\n[link](https://www.google.com)\n\n![image](https://picsum.photos/200/300)';
+
+    const [title, setTitle] = useState(article ? article.title : defaultTitle);
+    const [content, setContent] = useState(article ? article.content : defaultContent);
 
     const handleTitleChange = useCallback((newTitle) => {
         setTitle(newTitle);
@@ -15,14 +23,31 @@ const ArticleEditor = ({ article }) => {
         setContent(newContent);
     }, []);
 
-    const onSubmit = async () => {
-        console.log(`Submitting ${title} and ${content}`);
-        await updateArticle(article.id, {
-            title,
-            content,
-        });
+    useEffect(() => {
+        if (article) {
+            setTitle(article.title);
+            setContent(article.content);
+        } else {
+            setTitle(defaultTitle);
+            setContent(defaultContent);
+        }
+    }, [article]);
+
+    const onSubmit = useCallback(async () => {
+        if (article) {
+            await updateArticle(article.id, {
+                title,
+                content,
+            });
+        } else {
+            article = await createArticle({
+                title,
+                content,
+                author: user.id,
+            });
+        }
         window.location.href = `/articles/${article.id}`;
-    };
+    }, [title, content, article, user]);
 
     return (
         <div className="relative">

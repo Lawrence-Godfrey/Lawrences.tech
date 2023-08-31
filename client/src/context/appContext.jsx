@@ -95,6 +95,7 @@ const AppProvider = ({ children }) => {
                 .get('/api/auth/me')
                 .then((response) => {
                     const { user } = response.data;
+                    dispatch({ type: Actions.SET_USER, payload: { user } });
                     resolve(user);
                 })
                 .catch((error) => {

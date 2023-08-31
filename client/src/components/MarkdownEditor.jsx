@@ -10,8 +10,9 @@ const MarkdownEditor = ({ defaultText, onChange }) => {
     const lineToIdMap = useRef({});
 
     useEffect(() => {
+        setMarkdown(defaultText);
         populateLineToIdMap(markdown, lineToIdMap);
-    }, []);
+    }, [markdown, defaultText]);
 
     const handleClick = (e) => {
         const textarea = e.target;
