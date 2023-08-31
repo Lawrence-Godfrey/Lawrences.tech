@@ -55,3 +55,17 @@ export async function updateArticle(id, article) {
     const response = await axios.patch(`/api/articles/${id}`, article);
     return response.data.article;
 }
+
+
+/**
+ * Creates a new article on the server
+ * @param {Object} article
+ * @return {Promise<*>}
+ * @throws {Error}
+ * @example
+ * const article = await createArticle({ title: 'New Title' });
+ */
+export async function createArticle(article) {
+    const response = await axios.post('/api/articles', article);
+    return response.data.article;
+}
