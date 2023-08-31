@@ -125,7 +125,6 @@ const LorenzAttractor = ({
         for (const agent of agentsRef.current) {
             scene.add(agent.sphere);
             if (agent.line) {
-                console.log('Adding line to scene');
                 scene.add(agent.line);
             }
         }

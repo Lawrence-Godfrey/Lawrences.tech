@@ -14,7 +14,7 @@ const EditableArticleTitle = ({ defaultText, onChange }) => {
                 className="text-center mx-auto w-1/2 border-0 p-2 text-3xl bg-transparent appearance-none
                             text-gray-700 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
-                defaultValue={defaultText}
+                value={defaultText}
                 onChange={handleTitleChange}
                 required
             />

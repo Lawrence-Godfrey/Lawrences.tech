@@ -13,17 +13,19 @@ const ArticleEditPage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!id) {
+            return; // In the case of an article being created, there is no ID yet.
+        }
+
         fetchArticle(id)
-            .then((article) => setArticle(article))
+            .then((article) => {
+                setArticle(article);
+            })
             .catch((err) => setError(err));
     }, [id]); // Rerun the effect when the id changes
 
     if (error) {
         return <Error500 />;
-    }
-
-    if (!article) {
-        return <p>Loading...</p>; // Show a loading message or spinner while the article is loading
     }
 
     return (

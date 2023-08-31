@@ -18,7 +18,7 @@ const ArticleListView = ({ articles }) => {
 
     return (
         <div className="py-8 px-4 mx-auto max-w-screen-md min-h-screen lg:py-16 lg:px-6">
-            <div className="text-center mb-20">
+            <div className="text-center">
                 <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                     Articles & Blog Posts
                 </h2>
@@ -28,6 +28,22 @@ const ArticleListView = ({ articles }) => {
 
                 <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
             </div>
+
+            <div className="h-10"></div>
+
+            <div className="text-center">
+                <button
+                    type="button"
+                    className="text-white bg-gradient-to-br from-pink-500 to-orange-400
+                        hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200
+                        font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    onClick={() => window.location.href = '/articles/new'}
+                >
+                    Create
+                </button>
+            </div>
+
+            <div className="h-10"></div>
 
             {articles.map((article) => (
                 <div key={article.id}>
