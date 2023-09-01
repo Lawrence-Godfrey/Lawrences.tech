@@ -28,6 +28,14 @@ const update = async (req, res, next) => {
         });
     }
 
+    // Check if user is the author of the article
+    if (article.author.toString() !== req.user._id.toString()) {
+        return res.status(403).json({
+            status: 'error',
+            message: 'You are not allowed to edit this article'
+        });
+    }
+
     const serializer = new ArticleSerializer({ instance: article, data: req.body });
     if (!serializer.isValid({ skipRequired: ['_all_'] })) {
         return res.status(400).json({
@@ -77,7 +85,9 @@ const deleteArticle = async (req, res, next) => {
 
 
 const list = async (req, res, next) => {
-    const articles = await Article.find({});
+    // Get articles ordered by date
+    const articles = await Article.find().sort({ createdAt: -1 });
+
     res.status(200).json({
         status: 'success',
         articles: articles.map(article => new ArticleSerializer({ instance: article }).data())
