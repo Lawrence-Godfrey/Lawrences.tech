@@ -11,6 +11,9 @@ const ScrollableDiv = React.forwardRef((props, ref) => {
         }
         ref.current.addEventListener('wheel', preventScrollChaining);
         return () => {
+            if (!ref.current) {
+                return;
+            }
             ref.current.removeEventListener('wheel', preventScrollChaining);
         };
     }, []);
@@ -31,6 +34,9 @@ const ScrollableTextArea = ({ value, onChange, onClick, className }) => {
     useEffect(() => {
         ref.current.addEventListener('wheel', preventScrollChaining);
         return () => {
+            if (!ref.current) {
+                return;
+            }
             ref.current.removeEventListener('wheel', preventScrollChaining);
         };
     }, []);
