@@ -1,11 +1,14 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import MarkdownEditor from './MarkdownEditor';
 import EditableArticleTitle from './EditableArticleTitle';
-import { useCallback, useEffect, useState } from 'react';
 import { createArticle, updateArticle } from '../api/articles';
 import { useAppContext } from '../context/appContext';
 
 const ArticleEditor = ({ article }) => {
     const { user } = useAppContext();
+    const navigate = useNavigate();
 
     const defaultTitle = 'Your Title';
     const defaultContent = 'Add your Markdown here\n\nFor example: \n**bold** \n*italic* \n`code`\n\n# Heading 1\n' +
@@ -63,7 +66,7 @@ const ArticleEditor = ({ article }) => {
                 <button
                     className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
                 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 "
-                    onClick={() => window.location.href = `/articles/${article.id}`}
+                    onClick={() => navigate(-1)}
                 >
                 Cancel
                 </button>
