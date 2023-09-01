@@ -7,7 +7,7 @@ import mongoDBSession from 'connect-mongodb-session';
 import flash from 'connect-flash';
 import cors from 'cors';
 
-import { authRouter, userRouter } from './routes/index.js';
+import { authRouter, userRouter, articleRouter } from './routes/index.js';
 import requestLogger from './middleware/requestLogger.js';
 import logger from './utils/logger.js';
 import passport from './authenticationStrategies/index.js';
@@ -72,6 +72,7 @@ app.use(passport.session());
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/articles', articleRouter);
 
 
 export default app;
