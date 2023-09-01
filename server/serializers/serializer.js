@@ -47,7 +47,7 @@ class Serializer {
             }
         }
     }
-    
+
     get errors() {
         return this._errors;
     }
@@ -167,7 +167,7 @@ class Serializer {
     isValid({ skip=[], skipRequired=[]}={}) {
         const instance = new this._model(this.validatedData());
         const errors = instance.validateSync({ pathsToSkip: skip });
-        if (errors) {
+        if (errors && !skipRequired.includes('_all_')) {
             // Loop through the error keys and get the message for each.
             for (let [key, value] of Object.entries(errors.errors)) {
                 if (skipRequired.includes(key) && value.kind === 'required') {
