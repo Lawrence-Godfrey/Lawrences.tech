@@ -34,7 +34,12 @@ const ArticleView = ({ article }) => {
 
                 <div className="flex items-center justify-between space-x-4">
                     <div className="flex items-center space-x-4">
-                        <img className="w-10 h-10 rounded-full" src={author.avatar} alt={author.username}></img>
+                        <img className="w-10 h-10 rounded-full"
+                            src={author.avatar}
+                            alt={author.username}
+                            referrerPolicy="no-referrer"
+                            crossOrigin="anonymous"
+                        ></img>
                         <div className="font-medium dark:text-white">
                             <div>{author.firstName} {author.lastName}</div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
