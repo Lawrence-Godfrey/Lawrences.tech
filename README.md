@@ -1,3 +1,6 @@
+![Build Workflow Status](https://github.com/Lawrence-Godfrey/Lawrences.tech/actions/workflows/.github/workflows/build-and-deploy.yml/badge.svg) ![GitHub Last Commit](https://img.shields.io/github/last-commit/Lawrence-Godfrey/Lawrences.tech)   ![GitHub](https://img.shields.io/github/license/Lawrence-Godfrey/Lawrences.tech)   ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Lawrence-Godfrey/Lawrences.tech)
+
+
 # Personal Website
 This repository contains the source code for the Express.js backend server and React.js frontend
 client hosted at [lawrences.tech](https://www.lawrences.tech). The website is hosted on an AWS EC2 instance 
@@ -15,7 +18,7 @@ listed below:
  - [x] Increase security by adding various security headers to all responses (CSP for XSS, cross-origin embedder and 
    frame policies for clickjacking, etc.)
    - [ ] Use latest CSP script-src directive to allow inline scripts to be executed using a nonce.
- - [ ] Setup a CI/CD pipeline which builds and tests the project on every push, and deploys the project
+ - [x] Setup a CI/CD pipeline which builds and tests the project on every push, and deploys the project
    to the server on every merge to master.
  - [ ] Use Redux to manage state on the frontend instead of React's Context API.
    - [ ] And Redux-Saga for async requests.
