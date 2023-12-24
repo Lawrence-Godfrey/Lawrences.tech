@@ -4,22 +4,54 @@ import { Footer, Navbar } from '../components';
 import { getPrediction } from '../api/word_prediction';
 import Error500 from './Error500';
 
+/**
+ * This component is the main page for the word prediction tool.
+ * It displays a list of input fields and a submit button.
+ * When clicked, the input text is submitted to the word prediction API as a list,
+ * and the words returned are displayed as a list.
+ * @return {Element}
+ * @constructor
+ */
 const WordPrediction = () => {
-    const [error, setError] = useState(null);
+    const [errors, setErrors] = useState([false, false, false]);
+    const [requestError, setRequestError] = useState(null);
 
     const [sentences, setSentences] = useState(['', '', '']);
     const [responseWords, setResponseWords] = useState([]);
 
     const wordsRef = React.useRef(null);
 
+    const validateSentence = (sentence) => {
+        return sentence.includes('____') && (sentence.match(/____/g) || []).length === 1;
+    };
+
     const handleInputChange = (index, event) => {
+        const newSentence = event.target.value;
         const newSentences = sentences.map((sentence, i) =>
-            i === index ? event.target.value : sentence,
+            i === index ? newSentence : sentence,
         );
         setSentences(newSentences);
+
+
+        // Validate if not empty
+        if (newSentence) {
+            const newErrors = errors.slice();
+            newErrors[index] = !validateSentence(newSentence);
+            setErrors(newErrors);
+        } else {
+            const newErrors = errors.slice();
+            newErrors[index] = false;
+            setErrors(newErrors);
+        }
     };
 
     const getWords = async () => {
+        // Only proceed if all sentences are valid
+        if (errors.some((error) => error)) {
+            alert('Please correct the errors in the sentences.');
+            return;
+        }
+
         getPrediction(sentences)
             .then((words) => {
                 // Get the first 5 words. words is a list of lists, where the first element in each list is the word.
@@ -34,12 +66,12 @@ const WordPrediction = () => {
             })
             .catch((err) => {
                 setResponseWords([]);
-                setError(err);
+                setRequestError(err);
             });
     };
 
-    if (error) {
-        console.log(error);
+    if (requestError) {
+        console.log(requestError);
         return <Error500 />;
     }
 
@@ -67,20 +99,34 @@ const WordPrediction = () => {
                             <div className="mb-6" key={index}>
                                 <label htmlFor="large-input"
                                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Sentence {index + 1} </label>
+                                    Sentence {index + 1} </label>
                                 <input type="text" id="large-input"
                                     onChange={(e) => handleInputChange(index, e)}
-                                    className="block w-full p-4 m-2 text-gray-900 border border-gray-300 rounded-lg
-                                    bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500"/>
+                                    className={`block w-full p-4 m-2 text-gray-900 border rounded-lg
+                                    bg-gray-50 sm:text-md
+                                    ${errors[index] ?
+                                'border-red-500 focus:border-red-500 focus:ring focus:ring-red-500 focus:ring-1' :
+                                'border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-1'}`}
+                                />
+                                {errors[index] && (
+                                    <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                                        The sentence must contain exactly one ____ token.
+                                    </p>
+                                )}
                             </div>
                         ))}
                     </div>
-                    <button
-                        onClick={getWords}
-                        className="px-6 py-3 text-white bg-blue-500 rounded hover:bg-blue-600"
-                    >
-                        Find the word
-                    </button>
+                    <div className="text-center">
+                        <button
+                            type="button"
+                            className="text-white bg-gradient-to-br from-pink-500 to-orange-400
+                        hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200
+                        font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                            onClick={getWords}
+                        >
+                            Find the word
+                        </button>
+                    </div>
                 </div>
 
                 <div ref={wordsRef} className="text-center mt-24">
