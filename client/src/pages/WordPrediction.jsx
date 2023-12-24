@@ -4,6 +4,14 @@ import { Footer, Navbar } from '../components';
 import { getPrediction } from '../api/word_prediction';
 import Error500 from './Error500';
 
+/**
+ * This component is the main page for the word prediction tool.
+ * It displays a list of input fields and a submit button.
+ * When clicked, the input text is submitted to the word prediction API as a list,
+ * and the words returned are displayed as a list.
+ * @return {Element}
+ * @constructor
+ */
 const WordPrediction = () => {
     const [errors, setErrors] = useState([false, false, false]);
     const [requestError, setRequestError] = useState(null);
