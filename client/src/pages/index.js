@@ -8,6 +8,7 @@ import About from './About';
 import ArticlePage from './Article';
 import ArticlesPage from './ArticleList';
 import ArticleEdit from './ArticleEdit';
+import WordPrediction from './WordPrediction';
 import Error500 from './Error500';
 import Error404 from './Error404';
 
@@ -24,4 +25,5 @@ export {
     ArticleEdit,
     Error500,
     Error404,
+    WordPrediction,
 };
