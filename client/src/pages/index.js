@@ -5,6 +5,7 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import PrivacyPolicy from './PrivacyPolicy';
 import About from './About';
+import Projects from './Projects';
 import ArticlePage from './Article';
 import ArticlesPage from './ArticleList';
 import ArticleEdit from './ArticleEdit';
@@ -26,4 +27,5 @@ export {
     Error500,
     Error404,
     WordPrediction,
+    Projects,
 };
