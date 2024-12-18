@@ -64,6 +64,10 @@ const update = async (req, res, next) => {
 const createMetaHtml = (article) => {
     const description = article.content.substring(0, 160).replace(/[#*`_\[\]]/g, '') + '...';
 
+    // Extract the first image URL from the markdown content
+    const imageMatch = article.content.match(/!\[.*?\]\((.*?)\)/);
+    const imageUrl = imageMatch ? imageMatch[1] : null;
+
     return `
         <!DOCTYPE html>
         <html>
@@ -74,13 +78,16 @@ const createMetaHtml = (article) => {
             <meta property="og:type" content="article" />
             <meta property="og:url" content="https://lawrences.tech/articles/${article._id}" />
             <meta property="article:published_time" content="${article.createdAt.toISOString()}" />
+            ${imageUrl ? `<meta property="og:image" content="${imageUrl}" />` : ''}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="${escape(article.title)}" />
             <meta name="twitter:description" content="${escape(description)}" />
+            ${imageUrl ? `<meta name="twitter:image" content="${imageUrl}" />` : ''}
         </head>
         <body>
             <h1>${escape(article.title)}</h1>
             <p>${escape(description)}</p>
+            ${imageUrl ? `<img src="${imageUrl}" alt="${escape(article.title)}" />` : ''}
         </body>
         </html>
     `;
