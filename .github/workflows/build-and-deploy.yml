@@ -66,7 +66,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "client/dist"
           target: "/var/www/html"
-          strip_components: 2
 
       # restart NGINX
       - name: Restart NGINX
