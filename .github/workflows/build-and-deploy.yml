@@ -67,6 +67,38 @@ jobs:
           source: "client/dist"
           target: "/var/www/html"
 
+      - name: Update and restart backend
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ vars.BACKEND_PATH }} || exit 1
+            # Stash any local changes to avoid conflicts
+            git stash
+            # Verify we're on the correct branch
+            git checkout master
+            # Fetch and verify the remote changes
+            git fetch origin master
+            # Check if there are any changes between local and remote
+            if git diff --quiet HEAD origin/master; then
+              echo "No changes to pull"
+            else
+              # Pull changes and check for errors
+              if ! git pull origin master; then
+                echo "Failed to pull changes"
+                exit 1
+              fi
+            fi
+            # Verify the application can start before restarting
+            if ! pm2 start ${{ vars.PM2_APP_NAME }} --no-daemon --no-autorestart; then
+              echo "Application failed to start"
+              exit 1
+            fi
+            # If test start successful, restart the actual service
+            pm2 restart ${{ vars.PM2_APP_NAME }}
+
       # restart NGINX
       - name: Restart NGINX
         uses: appleboy/ssh-action@master
