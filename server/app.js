@@ -69,6 +69,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+// Health check endpoint for Kubernetes
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
+
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: lawrences-tech
+data:
+  PORT: "5050"
+  HOST: "http://localhost"
+  CLIENT_URL: "http://localhost:8080"
+  NODE_ENV: "development"
+  GOOGLE_OAUTH_CALLBACK_URL: "http://localhost:8080/api/auth/oauth/callback/google"
+  GITHUB_OAUTH_CALLBACK_URL: "http://localhost:8080/api/auth/oauth/callback/github"

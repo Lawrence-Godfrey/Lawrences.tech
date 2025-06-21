@@ -45,7 +45,7 @@ commands to start the server and client:
 #### Start the server and client using `concurrently`
 
 ```bash
-npm run start
+npm run dev
 ```
 
 #### Build and serve the client
@@ -55,5 +55,20 @@ cd client
 npx webpack build
 npx serve -s dist
 ```
+
+## Running with Kubernetes (Recommended for Development)
+
+For a more production-like development environment, you can run the application using Kubernetes with Tilt:
+
+1. **Prerequisites**: Docker, kubectl, Tilt, and a local Kubernetes cluster
+2. **Setup**: `./scripts/setup.sh`
+3. **Update secrets**: Edit `k8s/secrets.yaml` with your actual values
+4. **Start**: `tilt up`
+5. **Access**: 
+   - Frontend: http://localhost:8080
+   - Backend: http://localhost:5050
+   - Tilt UI: http://localhost:10350
+
+See [k8s/README.md](k8s/README.md) for detailed instructions.
 
 
