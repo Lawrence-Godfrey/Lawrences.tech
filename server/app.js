@@ -32,9 +32,28 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Build MongoDB URL from components or use fallback
+const buildMongoURL = () => {
+    const {
+        MONGO_USER,
+        MONGO_PASSWORD,
+        MONGO_HOST,
+        MONGO_DB,
+        MONGO_REPLICA_SET
+    } = process.env;
+    
+    // If individual components are available, build the URL
+    if (MONGO_USER && MONGO_PASSWORD && MONGO_HOST && MONGO_DB) {
+        return `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DB}?replicaSet=${MONGO_REPLICA_SET}&ssl=false`;
+    }
+    
+    // Fallback to MONGO_URL if individual components aren't available
+    return process.env.MONGO_URL;
+};
+
 // Authentication middleware
 let store = new MongoDBStore({
-    uri: process.env.MONGO_URL,
+    uri: buildMongoURL(),
     collection: 'Sessions'
 });
 

@@ -9,15 +9,19 @@ const port = process.env.PORT || 6000;
 
 
 const start = async () => {
+  // Start HTTP server first
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port}...`);
+  });
+
+  // Connect to database with retry logic
   try {
     await connectDB(process.env.MONGO_URL);
-
-    app.listen(port, () => {
-      console.log(`Server is listening on port ${port}...`);
-    })
-
+    console.log('Database connected successfully');
   } catch (err) {
+    console.log(`Error: Error connecting to db: ${err.message}`);
     console.log(err);
+    // Server continues running even if DB connection fails
   }
 };
 

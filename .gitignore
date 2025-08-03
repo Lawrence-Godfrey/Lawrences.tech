@@ -1,9 +1,10 @@
 # Add these lines to your .gitignore
 
+# Environment variables
+.env
+
 # Tilt
 .tiltbuild/
-
-k8s/secrets.yaml
 
 # Docker
 .dockerignore

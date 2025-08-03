@@ -51,11 +51,19 @@ spec:
             configMapKeyRef:
               name: app-config
               key: GITHUB_OAUTH_CALLBACK_URL
-        - name: MONGO_URL
+        - name: MONGO_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: app-secrets
-              key: MONGO_URL
+              name: lawrences-tech-mongodb-password
+              key: password
+        - name: MONGO_HOST
+          value: "lawrences-tech-mongodb-0.lawrences-tech-mongodb-svc.lawrences-tech.svc.cluster.local:27017,lawrences-tech-mongodb-1.lawrences-tech-mongodb-svc.lawrences-tech.svc.cluster.local:27017,lawrences-tech-mongodb-2.lawrences-tech-mongodb-svc.lawrences-tech.svc.cluster.local:27017"
+        - name: MONGO_DB
+          value: "lawrences_tech_db"
+        - name: MONGO_USER
+          value: "lawrences-tech-user"
+        - name: MONGO_REPLICA_SET
+          value: "lawrences-tech-mongodb"
         - name: GOOGLE_OAUTH_CLIENT_ID
           valueFrom:
             secretKeyRef:
