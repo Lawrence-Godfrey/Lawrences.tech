@@ -6,6 +6,15 @@ local_resource(
     labels=['setup'],
 )
 
+# Switch to the kind context automatically
+local_resource(
+    'switch-context',
+    cmd='kubectl config use-context kind-lawrences-tech',
+    deps=[],
+    resource_deps=['ensure-kind-cluster'],
+    labels=['setup'],
+)
+
 # Ensure we're using the right Kubernetes context for kind
 allow_k8s_contexts('kind-lawrences-tech')
 
@@ -15,7 +24,7 @@ local_resource(
     'nginx-ingress',
     cmd='kubectl get deployment -n ingress-nginx ingress-nginx-controller > /dev/null 2>&1 || kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml',
     deps=[],
-    resource_deps=['ensure-kind-cluster'],
+    resource_deps=['switch-context'],
     labels=['setup'],
 )
 
@@ -43,7 +52,7 @@ local_resource(
     'mongodb-crd',
     cmd='kubectl get crd mongodbcommunity.mongodbcommunity.mongodb.com > /dev/null 2>&1 || kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml',
     deps=[],
-    resource_deps=['ensure-kind-cluster'],
+    resource_deps=['switch-context'],
     labels=['setup'],
 )
 
@@ -57,13 +66,13 @@ local_resource(
     kubectl apply -f k8s/mongodb-namespace.yaml
     
     # Generate or use existing MongoDB password
-    if kubectl get secret lawrences-tech-mongodb-password -n lawrences-tech > /dev/null 2>&1; then
+    if kubectl get secret mongodb-password -n lawrences-tech > /dev/null 2>&1; then
         echo "✅ MongoDB password secret already exists"
     else
         echo "🔐 Creating MongoDB password secret..."
         # Generate a random password if MONGODB_PASSWORD env var is not set
         MONGODB_PASSWORD=${MONGODB_PASSWORD:-$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)}
-        kubectl create secret generic lawrences-tech-mongodb-password -n lawrences-tech --from-literal=password="$MONGODB_PASSWORD"
+        kubectl create secret generic mongodb-password -n lawrences-tech --from-literal=password="$MONGODB_PASSWORD"
         echo "✅ MongoDB password secret created"
     fi
     
@@ -109,7 +118,7 @@ k8s_yaml(kustomize("k8s"))
 
 # Build and deploy the server
 docker_build(
-    "lawrences-tech-server:latest",
+    "server:latest",
     context="./server",
     dockerfile="./server/Dockerfile",
     live_update=[
@@ -125,7 +134,7 @@ docker_build(
 
 # Build and deploy the client
 docker_build(
-    "lawrences-tech-client:latest", context="./client", dockerfile="./client/Dockerfile"
+    "client:latest", context="./client", dockerfile="./client/Dockerfile"
 )
 
 # Set up port forwarding for local access
@@ -139,7 +148,7 @@ k8s_resource(
         "lawrences-tech:namespace",
         "app-config:configmap",
         "app-secrets:secret",
-        "lawrences-tech-ingress:ingress",
+        "ingress:ingress",
     ],
     resource_deps=['wait-for-ingress'],
 )
@@ -147,7 +156,7 @@ k8s_resource(
 k8s_resource(
     new_name="mongodb-cluster",
     objects=[
-        "lawrences-tech-mongodb:mongodbcommunity",
+        "mongodb:mongodbcommunity",
     ],
     resource_deps=['mongodb-operator'],
 )
