@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: lawrences-tech-ingress
+  name: ingress
   namespace: lawrences-tech
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
