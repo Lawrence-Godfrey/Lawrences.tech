@@ -1,5 +1,8 @@
 # Lawrence's Tech Development Commands
 
+default:
+  @just --list --unsorted
+
 # Start the complete development environment
 dev:
     @echo "🚀 Starting development environment..."
