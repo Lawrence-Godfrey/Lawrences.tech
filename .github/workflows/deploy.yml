@@ -1,0 +1,170 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  APP_DIR: ${{ vars.APP_DIR || '/var/www/lawrences.tech' }}
+  FRONTEND_ROOT: ${{ vars.FRONTEND_ROOT || '/var/www/html/client/dist' }}
+  HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL || 'https://www.lawrences.tech/api/health' }}
+  LEGACY_ENV_PATH: ${{ vars.LEGACY_ENV_PATH }}
+  PM2_APP_NAME: ${{ vars.PM2_APP_NAME || 'backend' }}
+  RELEASES_TO_KEEP: ${{ vars.RELEASES_TO_KEEP || '5' }}
+
+jobs:
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Build client
+        working-directory: client
+        run: npx webpack build --env production --mode production --config ./webpack.config.prod.js
+
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Package release
+        run: |
+          set -euo pipefail
+          release="lawrences-tech-${GITHUB_SHA}.tar.gz"
+          mkdir -p package/client package/server
+          cp -a client/dist package/client/dist
+          cp -a server/. package/server/
+          rm -rf package/server/node_modules
+          cp ecosystem.config.cjs package/ecosystem.config.cjs
+          tar -C package -czf "$release" .
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: lawrences-tech-${{ github.sha }}.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+
+      - name: Configure SSH
+        env:
+          HOST: ${{ secrets.HOST }}
+          KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Copy release artifact
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          set -euo pipefail
+          archive="lawrences-tech-${GITHUB_SHA}.tar.gz"
+          scp -i ~/.ssh/deploy_key "$archive" "$USERNAME@$HOST:/tmp/$archive"
+
+      - name: Promote release
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          RELEASE_ID: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key "$USERNAME@$HOST" \
+            "APP_DIR='$APP_DIR' FRONTEND_ROOT='$FRONTEND_ROOT' HEALTHCHECK_URL='$HEALTHCHECK_URL' LEGACY_ENV_PATH='$LEGACY_ENV_PATH' PM2_APP_NAME='$PM2_APP_NAME' RELEASE_ID='$RELEASE_ID' RELEASES_TO_KEEP='$RELEASES_TO_KEEP' bash -s" <<'DEPLOY'
+          set -Eeuo pipefail
+
+          archive="/tmp/lawrences-tech-${RELEASE_ID}.tar.gz"
+          release_dir="$APP_DIR/releases/$RELEASE_ID"
+          current_link="$APP_DIR/current"
+          shared_dir="$APP_DIR/shared"
+          frontend_tmp="${FRONTEND_ROOT}.tmp-${RELEASE_ID}"
+          frontend_previous="${FRONTEND_ROOT}.previous-${RELEASE_ID}"
+
+          mkdir -p "$APP_DIR/releases" "$shared_dir/logs" "$(dirname "$FRONTEND_ROOT")"
+          rm -rf "$release_dir"
+          mkdir -p "$release_dir"
+          tar -xzf "$archive" -C "$release_dir"
+          rm -f "$archive"
+
+          if [ ! -f "$shared_dir/.env" ]; then
+            if [ -n "${LEGACY_ENV_PATH:-}" ] && [ -f "$LEGACY_ENV_PATH" ]; then
+              cp "$LEGACY_ENV_PATH" "$shared_dir/.env"
+              chmod 600 "$shared_dir/.env"
+            else
+              echo "Missing $shared_dir/.env. Create it before deploying or set LEGACY_ENV_PATH."
+              exit 1
+            fi
+          fi
+
+          ln -sfn "$shared_dir/.env" "$release_dir/.env"
+          rm -rf "$release_dir/logs"
+          ln -sfn "$shared_dir/logs" "$release_dir/logs"
+
+          cd "$release_dir/server"
+          npm ci --omit=dev
+
+          rm -rf "$frontend_tmp" "$frontend_previous"
+          mkdir -p "$frontend_tmp"
+          cp -a "$release_dir/client/dist/." "$frontend_tmp/"
+          if [ -e "$FRONTEND_ROOT" ] || [ -L "$FRONTEND_ROOT" ]; then
+            mv "$FRONTEND_ROOT" "$frontend_previous"
+          fi
+          mv "$frontend_tmp" "$FRONTEND_ROOT"
+
+          ln -sfn "$release_dir" "$current_link"
+          APP_CURRENT_DIR="$current_link" PM2_APP_NAME="$PM2_APP_NAME" pm2 startOrReload "$current_link/ecosystem.config.cjs" --env production --update-env
+
+          sudo nginx -t
+          sudo systemctl reload nginx
+
+          curl --fail --silent --show-error --retry 5 --retry-delay 2 "$HEALTHCHECK_URL" >/dev/null
+
+          rm -rf "$frontend_previous"
+          find "$APP_DIR/releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
+            | sort -rn \
+            | awk "NR>$RELEASES_TO_KEEP {print \$2}" \
+            | xargs -r rm -rf
+          DEPLOY

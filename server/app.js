@@ -28,6 +28,10 @@ morganBody(app, {stream: {write: message => logger.info(message)}});  // Logs re
 // Security middleware
 app.use(helmet());
 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 // Request parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
