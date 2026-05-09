@@ -15,7 +15,7 @@ Optional GitHub environment variables:
 
 - `APP_DIR`: release root. Defaults to `/var/www/lawrences.tech`.
 - `FRONTEND_ROOT`: nginx frontend root. Defaults to `/var/www/html/client/dist`.
-- `HEALTHCHECK_URL`: health check URL. Defaults to `https://www.lawrences.tech/api/health`.
+- `HEALTHCHECK_URL`: health check URL. Defaults to `http://127.0.0.1:5050/api/health`.
 - `LEGACY_ENV_PATH`: existing server `.env` to copy on first deploy. Optional; if unset, create `APP_DIR/shared/.env` before deploying.
 - `PM2_APP_NAME`: PM2 app name. Defaults to `backend`.
 - `RELEASES_TO_KEEP`: number of old releases to retain. Defaults to `5`.

@@ -17,7 +17,7 @@ env:
   NODE_VERSION: '20'
   APP_DIR: ${{ vars.APP_DIR || '/var/www/lawrences.tech' }}
   FRONTEND_ROOT: ${{ vars.FRONTEND_ROOT || '/var/www/html/client/dist' }}
-  HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL || 'https://www.lawrences.tech/api/health' }}
+  HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL || 'http://127.0.0.1:5050/api/health' }}
   LEGACY_ENV_PATH: ${{ vars.LEGACY_ENV_PATH }}
   PM2_APP_NAME: ${{ vars.PM2_APP_NAME || 'backend' }}
   RELEASES_TO_KEEP: ${{ vars.RELEASES_TO_KEEP || '5' }}
@@ -155,7 +155,8 @@ jobs:
           mv "$frontend_tmp" "$FRONTEND_ROOT"
 
           ln -sfn "$release_dir" "$current_link"
-          APP_CURRENT_DIR="$current_link" PM2_APP_NAME="$PM2_APP_NAME" pm2 startOrReload "$current_link/ecosystem.config.cjs" --env production --update-env
+          pm2 delete "$PM2_APP_NAME" >/dev/null 2>&1 || true
+          APP_CURRENT_DIR="$current_link" PM2_APP_NAME="$PM2_APP_NAME" pm2 start "$current_link/ecosystem.config.cjs" --env production --update-env
 
           sudo nginx -t
           sudo systemctl reload nginx
