@@ -1,3 +1,7 @@
+
+load('ext://namespace', 'namespace_create')
+
+
 # Create kind cluster if it doesn't exist
 local_resource(
     'ensure-kind-cluster',
@@ -18,6 +22,15 @@ local_resource(
 # Ensure we're using the right Kubernetes context for kind
 allow_k8s_contexts('kind-lawrences-tech')
 
+# Safety check: warn if using default namespace without explicit intent
+if k8s_namespace() == 'default':
+    print("⚠️  WARNING: Deploying to 'default' namespace")
+    print("   Consider using: tilt up --namespace=dev")
+    print("   Current namespace: %s" % k8s_namespace())
+
+# Create namespace if it doesn't exist (similar to helm's --create-namespace)
+namespace_create(k8s_namespace())
+
 # Install NGINX Ingress Controller if it doesn't exist
 # This replaces the need for setup scripts
 local_resource(
@@ -34,10 +47,17 @@ local_resource(
     cmd='''
     echo "⏳ Waiting for NGINX Ingress Controller to be ready..."
     
+    # Wait for admission webhook jobs to complete (if they exist - they may have been cleaned up)
+    echo "⏳ Waiting for admission webhook jobs..."
+    kubectl wait --namespace ingress-nginx --for=condition=complete job/ingress-nginx-admission-create --timeout=300s 2>/dev/null || true
+    kubectl wait --namespace ingress-nginx --for=condition=complete job/ingress-nginx-admission-patch --timeout=300s 2>/dev/null || true
+    
     # Wait for deployment to be available
+    echo "⏳ Waiting for controller deployment..."
     kubectl wait --namespace ingress-nginx --for=condition=available deployment/ingress-nginx-controller --timeout=300s
     
     # Wait for pods to be ready
+    echo "⏳ Waiting for controller pods..."
     kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=300s
     
     echo "✅ NGINX Ingress Controller is ready"
@@ -56,64 +76,7 @@ local_resource(
     labels=['setup'],
 )
 
-# Set up MongoDB namespace and RBAC
-local_resource(
-    'mongodb-setup',
-    cmd='''
-    echo "🍃 Setting up MongoDB Community Operator..."
-    
-    # Create MongoDB namespace
-    kubectl apply -f k8s/mongodb-namespace.yaml
-    
-    # Generate or use existing MongoDB password
-    if kubectl get secret mongodb-password -n lawrences-tech > /dev/null 2>&1; then
-        echo "✅ MongoDB password secret already exists"
-    else
-        echo "🔐 Creating MongoDB password secret..."
-        # Generate a random password if MONGODB_PASSWORD env var is not set
-        MONGODB_PASSWORD=${MONGODB_PASSWORD:-$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)}
-        kubectl create secret generic mongodb-password -n lawrences-tech --from-literal=password="$MONGODB_PASSWORD"
-        echo "✅ MongoDB password secret created"
-    fi
-    
-    # Set up RBAC for MongoDB operator
-    kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/rbac/service_account.yaml --namespace lawrences-tech
-    kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/rbac/role.yaml --namespace lawrences-tech  
-    kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/rbac/role_binding.yaml --namespace lawrences-tech
-    
-    echo "✅ MongoDB namespace and RBAC configured"
-    ''',
-    deps=['k8s/mongodb-namespace.yaml'],
-    resource_deps=['mongodb-crd'],
-    labels=['setup'],
-)
-
-# Deploy MongoDB Community Operator
-local_resource(
-    'mongodb-operator',
-    cmd='''
-    echo "🚀 Deploying MongoDB Community Operator..."
-    
-    # Install the operator if not already running
-    if kubectl get deployment mongodb-kubernetes-operator -n lawrences-tech > /dev/null 2>&1; then
-        echo "✅ MongoDB operator is already deployed"
-    else
-        kubectl apply -f https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/manager/manager.yaml --namespace lawrences-tech
-        echo "⏳ Waiting for MongoDB operator to be ready..."
-        kubectl wait --for=condition=available deployment/mongodb-kubernetes-operator --namespace lawrences-tech --timeout=300s
-    fi
-    ''',
-    deps=[],
-    resource_deps=['mongodb-setup'],
-    labels=['setup'],
-)
-
-
-
-# Deploy MongoDB
-k8s_yaml("k8s/mongodb.yaml")
-
-# Apply Kubernetes manifests using Kustomize
+# Apply Kubernetes manifests using Kustomize (includes MongoDB operator, RBAC, and secrets)
 k8s_yaml(kustomize("k8s"))
 
 # Build and deploy the server
@@ -138,16 +101,23 @@ docker_build(
 )
 
 # Set up port forwarding for local access
-k8s_resource("server", port_forwards="5050:5050", resource_deps=['wait-for-ingress', 'mongodb-operator'])
+k8s_resource("server", port_forwards="5050:5050", resource_deps=['wait-for-ingress', 'mongodb-kubernetes-operator'])
 k8s_resource("client", port_forwards="8080:80", resource_deps=['wait-for-ingress'])
+
+# MongoDB operator resource
+k8s_resource(
+    "mongodb-kubernetes-operator",
+    resource_deps=['mongodb-crd'],
+    labels=['database'],
+)
 
 # Group resources for better organization in Tilt UI
 k8s_resource(
     new_name="lawrences-tech-app",
     objects=[
-        "lawrences-tech:namespace",
         "app-config:configmap",
         "app-secrets:secret",
+        "mongodb-password:secret",
         "ingress:ingress",
     ],
     resource_deps=['wait-for-ingress'],
@@ -158,7 +128,18 @@ k8s_resource(
     objects=[
         "mongodb:mongodbcommunity",
     ],
-    resource_deps=['mongodb-operator'],
+    resource_deps=['mongodb-kubernetes-operator'],
+)
+
+k8s_resource(
+    new_name="mongodb-rbac",
+    objects=[
+        "mongodb-kubernetes-operator:serviceaccount",
+        "mongodb-database:serviceaccount",
+        "mongodb-kubernetes-operator:role",
+        "mongodb-kubernetes-operator:rolebinding",
+    ],
+    labels=['database'],
 )
 
 # Optional: Cleanup resource to tear down the cluster
@@ -173,6 +154,7 @@ local_resource(
 
 # Configure the Tilt UI
 print("🚀 Lawrences Tech is starting up!")
+print("📦 Deploying to namespace: %s" % k8s_namespace())
 print("🌐 Once ready, access your app at:")
 print("   📱 Frontend: http://localhost:8080")
 print("   🔧 Backend: http://localhost:5050")

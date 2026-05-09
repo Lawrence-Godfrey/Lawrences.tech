@@ -1,19 +1,24 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: lawrences-tech
-
 resources:
-  - namespace.yaml
   - configmap.yaml
   - server.yaml
   - client.yaml
   - ingress.yaml
+  - mongodb-rbac.yaml
+  - mongodb-operator.yaml
+  - mongodb.yaml
 
 secretGenerator:
   - name: app-secrets
     envs:
       - .env
+    options:
+      disableNameSuffixHash: true
+  - name: mongodb-password
+    literals:
+      - password=localdevpassword123
     options:
       disableNameSuffixHash: true
 

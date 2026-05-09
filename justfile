@@ -7,7 +7,7 @@ default:
 dev:
     @echo "🚀 Starting development environment..."
     just cluster-start
-    tilt up
+    tilt up --stream --namespace dev
 
 # Start kind cluster
 cluster-start:

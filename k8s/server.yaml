@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server
-  namespace: lawrences-tech
   labels:
     app: server
 spec:
@@ -57,7 +56,7 @@ spec:
               name: mongodb-password
               key: password
         - name: MONGO_HOST
-          value: "mongodb-0.mongodb-svc.lawrences-tech.svc.cluster.local:27017,mongodb-1.mongodb-svc.lawrences-tech.svc.cluster.local:27017,mongodb-2.mongodb-svc.lawrences-tech.svc.cluster.local:27017"
+          value: "mongodb-0.mongodb-svc:27017,mongodb-1.mongodb-svc:27017,mongodb-2.mongodb-svc:27017"
         - name: MONGO_DB
           value: "lawrences_tech_db"
         - name: MONGO_USER
@@ -113,7 +112,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: server
-  namespace: lawrences-tech
 spec:
   selector:
     app: server
