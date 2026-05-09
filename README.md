@@ -1,4 +1,4 @@
-![Build Workflow Status](https://github.com/Lawrence-Godfrey/Lawrences.tech/actions/workflows/.github/workflows/build-and-deploy.yml/badge.svg) ![GitHub Last Commit](https://img.shields.io/github/last-commit/Lawrence-Godfrey/Lawrences.tech)   ![GitHub](https://img.shields.io/github/license/Lawrence-Godfrey/Lawrences.tech)   ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Lawrence-Godfrey/Lawrences.tech)
+![Deploy Website Status](https://github.com/Lawrence-Godfrey/Lawrences.tech/actions/workflows/deploy.yml/badge.svg) ![GitHub Last Commit](https://img.shields.io/github/last-commit/Lawrence-Godfrey/Lawrences.tech)   ![GitHub](https://img.shields.io/github/license/Lawrence-Godfrey/Lawrences.tech)   ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Lawrence-Godfrey/Lawrences.tech)
 
 
 # Personal Website

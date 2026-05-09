@@ -1,9 +1,14 @@
-name: Deploy
+name: Deploy Website
 
 on:
   push:
     branches:
       - master
+    paths:
+      - '.github/workflows/deploy.yml'
+      - 'client/**'
+      - 'server/**'
+      - 'ecosystem.config.cjs'
   workflow_dispatch:
 
 permissions:
