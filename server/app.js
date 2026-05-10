@@ -8,6 +8,7 @@ import flash from 'connect-flash';
 import cors from 'cors';
 
 import { authRouter, userRouter, articleRouter } from './routes/index.js';
+import { list as listArticles, retrieve as retrieveArticle } from './controllers/articleController.js';
 import requestLogger from './middleware/requestLogger.js';
 import logger from './utils/logger.js';
 import passport from './authenticationStrategies/index.js';
@@ -35,6 +36,9 @@ app.get('/api/health', (req, res) => {
 // Request parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.get('/api/articles', listArticles);
+app.get('/api/articles/:id', retrieveArticle);
 
 // Authentication middleware
 let store = new MongoDBStore({
