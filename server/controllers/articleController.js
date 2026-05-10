@@ -2,6 +2,24 @@ import Article from '../models/article.js';
 import ArticleSerializer from "../serializers/articleSerializer.js";
 
 
+const serializeAuthor = (author) => ({
+    id: author._id,
+    username: author.username,
+    firstName: author.firstName,
+    lastName: author.lastName,
+    avatar: author.avatar,
+});
+
+
+const serializeArticle = (article) => {
+    const data = new ArticleSerializer({ instance: article }).data();
+    if (article.populated('author')) {
+        data.author = serializeAuthor(article.author);
+    }
+    return data;
+};
+
+
 const create = async (req, res, next) => {
     const serializer = new ArticleSerializer({ data: req.body });
     if (!serializer.isValid()) {
@@ -147,7 +165,7 @@ const sendCrawlerResponse = (res, article) => {
  */
 const retrieve = async (req, res, next) => {
 
-    const article = await Article.findById(req.params.id);
+    const article = await Article.findById(req.params.id).populate('author');
     if (!article) {
         return res.status(404).json({
             status: 'error',
@@ -161,7 +179,7 @@ const retrieve = async (req, res, next) => {
 
     res.status(200).json({
         status: 'success',
-        article: new ArticleSerializer({ instance: article }).data()
+        article: serializeArticle(article)
     });
 }
 
@@ -184,11 +202,11 @@ const deleteArticle = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     // Get articles ordered by date
-    const articles = await Article.find().sort({ createdAt: -1 });
+    const articles = await Article.find().sort({ createdAt: -1 }).populate('author');
 
     res.status(200).json({
         status: 'success',
-        articles: articles.map(article => new ArticleSerializer({ instance: article }).data())
+        articles: articles.map(article => serializeArticle(article))
     });
 }
 

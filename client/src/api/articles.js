@@ -24,7 +24,9 @@ export async function fetchArticles() {
 export async function fetchArticlesWithAuthors() {
     const articles = await fetchArticles();
     for (let i = 0; i < articles.length; i++) {
-        articles[i].author = await fetchUser(articles[i].author);
+        if (typeof articles[i].author === 'string') {
+            articles[i].author = await fetchUser(articles[i].author);
+        }
     }
     return articles;
 }

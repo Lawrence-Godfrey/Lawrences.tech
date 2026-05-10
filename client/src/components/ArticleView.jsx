@@ -9,6 +9,11 @@ const ArticleView = ({ article }) => {
     const [fullScreenImage, setFullScreenImage] = useState(null);
 
     useEffect(() => {
+        if (typeof article.author === 'object') {
+            setAuthor(article.author);
+            return;
+        }
+
         axios.get(`/api/users/${article.author}`)
             .then((response) => {
                 setAuthor(response.data.user);
