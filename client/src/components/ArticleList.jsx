@@ -2,17 +2,38 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 const ArticleListView = ({ articles }) => {
-    /**
-     * Returns the number of days ago the article was published
-     * @param {string} dateString - The date the article was published
-     * @return {number}
-     */
-    function daysAgo(dateString) {
+    function formatPublishedDate(dateString) {
         const articleDate = new Date(dateString);
         const currentDate = new Date();
-        const diffInMilliseconds = currentDate - articleDate;
-        const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
-        return Math.floor(diffInMilliseconds / oneDayInMilliseconds);
+        const diffInSeconds = Math.round((articleDate - currentDate) / 1000);
+        const absDiffInSeconds = Math.abs(diffInSeconds);
+        const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+        if (absDiffInSeconds < 60) {
+            return 'just now';
+        }
+
+        if (absDiffInSeconds < 60 * 60) {
+            return relativeTime.format(Math.round(diffInSeconds / 60), 'minute');
+        }
+
+        if (absDiffInSeconds < 60 * 60 * 24) {
+            return relativeTime.format(Math.round(diffInSeconds / (60 * 60)), 'hour');
+        }
+
+        if (absDiffInSeconds < 60 * 60 * 24 * 7) {
+            return relativeTime.format(Math.round(diffInSeconds / (60 * 60 * 24)), 'day');
+        }
+
+        if (absDiffInSeconds < 60 * 60 * 24 * 31) {
+            return relativeTime.format(Math.round(diffInSeconds / (60 * 60 * 24 * 7)), 'week');
+        }
+
+        return articleDate.toLocaleDateString('en', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        });
     }
 
 
@@ -63,7 +84,7 @@ const ArticleListView = ({ articles }) => {
                                         Article
                             </span>
                             <span className="text-sm">
-                                {daysAgo(article.createdAt)} days ago
+                                {formatPublishedDate(article.createdAt)}
                             </span>
                         </div>
                         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
