@@ -11,6 +11,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+                cmu: ['"CMU Serif"', ...defaultTheme.fontFamily.serif],
             },
             colors: {
                 primary: {

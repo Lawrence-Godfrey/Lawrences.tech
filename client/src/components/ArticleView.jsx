@@ -39,15 +39,16 @@ const ArticleView = ({ article }) => {
                 className="cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => setFullScreenImage(src)}
             />
-        )
+        ),
     };
 
     return (
         <>
             <div className="flex justify-center items-center min-h-screen">
-                <div className="wrapper z-0 mt-32 xl:mt-0 flex flex-col justify-center max-w-[800px] px-6">
-                    <h1 className="mb-8 mt-16 text-3xl font-extrabold leading-none tracking-normal text-gray-800 md:text-4xl
-            lg:text-4xl dark:text-white">
+                <div className="wrapper z-0 mt-32 xl:mt-0 flex flex-col justify-center max-w-[800px]
+                    px-6 font-cmu">
+                    <h1 className="mb-8 mt-16 text-3xl font-extrabold leading-none tracking-normal text-gray-800
+                        md:text-4xl lg:text-4xl dark:text-white">
                         { article.title }
                     </h1>
 
@@ -82,7 +83,7 @@ const ArticleView = ({ article }) => {
                             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                         </>
                     }
-                    <div className="prose mt-10 mb-10">
+                    <div className="prose mt-10 mb-10 font-cmu">
                         <ReactMarkdown components={imageRenderer}>{article.content}</ReactMarkdown>
                     </div>
                 </div>
@@ -90,7 +91,7 @@ const ArticleView = ({ article }) => {
 
             {/* Full-screen image modal */}
             {fullScreenImage && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
                     onClick={() => setFullScreenImage(null)}
                 >

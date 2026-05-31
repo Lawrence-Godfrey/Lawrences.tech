@@ -60,7 +60,7 @@ const MarkdownEditor = ({ defaultText, onChange }) => {
                 <div className="flex-1 p-4 rounded">
                     <div className="flex-1 p-4">
                         <h2 className="text-xl mb-6 text-center">Preview</h2>
-                        <ScrollableDiv ref={previewRef} className="prose overflow-y-auto h-[600px] p-4 rounded
+                        <ScrollableDiv ref={previewRef} className="prose font-cmu overflow-y-auto h-[600px] p-4 rounded
                         hide-scrollbar">
                             {markdown.split('\n').map((line, i) => (
                                 <div key={i} id={`line-${i + 1}`}>

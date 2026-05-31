@@ -2,6 +2,11 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 const ArticleListView = ({ articles }) => {
+    /**
+     * Format an article date relative to the current time.
+     * @param {string} dateString Article creation date.
+     * @return {string} Human-readable publish date.
+     */
     function formatPublishedDate(dateString) {
         const articleDate = new Date(dateString);
         const currentDate = new Date();
@@ -68,7 +73,7 @@ const ArticleListView = ({ articles }) => {
 
             {articles.map((article) => (
                 <div key={article.id}>
-                    <article className="p-6 rounded-lg">
+                    <article className="p-6 rounded-lg font-cmu">
                         <div className="flex justify-between items-center mb-5 text-gray-500">
                             <span
                                 className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex
