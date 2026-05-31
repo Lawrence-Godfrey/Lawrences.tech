@@ -46,7 +46,7 @@ const ArticleView = ({ article }) => {
         <>
             <div className="flex justify-center items-center min-h-screen">
                 <div className="wrapper z-0 mt-32 xl:mt-0 flex flex-col justify-center max-w-[800px]
-                    px-6 font-cmu">
+                    px-6">
                     <h1 className="mb-8 mt-16 text-3xl font-extrabold leading-none tracking-normal text-gray-800
                         md:text-4xl lg:text-4xl dark:text-white">
                         { article.title }
@@ -77,13 +77,13 @@ const ArticleView = ({ article }) => {
 
                     {article.description &&
                         <>
-                            <p className="text-gray-500 dark:text-gray-400">
+                            <p className="font-iowan text-gray-500 dark:text-gray-400">
                                 { article.description }
                             </p>
                             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                         </>
                     }
-                    <div className="prose mt-10 mb-10 font-cmu">
+                    <div className="prose blog-body mt-10 mb-10">
                         <ReactMarkdown components={imageRenderer}>{article.content}</ReactMarkdown>
                     </div>
                 </div>

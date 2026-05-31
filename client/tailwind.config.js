@@ -11,7 +11,12 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-                cmu: ['"CMU Serif"', ...defaultTheme.fontFamily.serif],
+                iowan: [
+                    '"Iowan Old Style BT Web"',
+                    '"Iowan Old Style"',
+                    'Georgia',
+                    ...defaultTheme.fontFamily.serif,
+                ],
             },
             colors: {
                 primary: {

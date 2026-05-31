@@ -73,7 +73,7 @@ const ArticleListView = ({ articles }) => {
 
             {articles.map((article) => (
                 <div key={article.id}>
-                    <article className="p-6 rounded-lg font-cmu">
+                    <article className="p-6 rounded-lg">
                         <div className="flex justify-between items-center mb-5 text-gray-500">
                             <span
                                 className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex
@@ -97,7 +97,7 @@ const ArticleListView = ({ articles }) => {
                                 {article.title}
                             </a>
                         </h2>
-                        <p className="mb-5 font-light text-gray-500 dark:text-gray-400">
+                        <p className="mb-5 font-iowan font-light text-gray-500 dark:text-gray-400">
                             <ReactMarkdown>
                                 {article.content.length > 300 ? article.content.substring(0, 300) +
                                     '...' : article.content}
