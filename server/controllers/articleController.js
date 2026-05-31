@@ -20,6 +20,11 @@ const serializeArticle = (article) => {
 };
 
 
+const setPublicArticleCacheHeaders = (res) => {
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=604800');
+};
+
+
 const create = async (req, res, next) => {
     const serializer = new ArticleSerializer({ data: req.body });
     if (!serializer.isValid()) {
@@ -177,6 +182,7 @@ const retrieve = async (req, res, next) => {
         return sendCrawlerResponse(res, article);
     }
 
+    setPublicArticleCacheHeaders(res);
     res.status(200).json({
         status: 'success',
         article: serializeArticle(article)
@@ -204,6 +210,7 @@ const list = async (req, res, next) => {
     // Get articles ordered by date
     const articles = await Article.find().sort({ createdAt: -1 }).populate('author');
 
+    setPublicArticleCacheHeaders(res);
     res.status(200).json({
         status: 'success',
         articles: articles.map(article => serializeArticle(article))
