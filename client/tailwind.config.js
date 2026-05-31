@@ -12,6 +12,7 @@ module.exports = {
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
                 iowan: [
+                    '"Iowan Old Style BT"',
                     '"Iowan Old Style BT Web"',
                     '"Iowan Old Style"',
                     'Georgia',
