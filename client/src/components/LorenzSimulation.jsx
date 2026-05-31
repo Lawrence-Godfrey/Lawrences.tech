@@ -110,9 +110,12 @@ const LorenzAttractor = ({
         );
         camera.position.set(...cameraPosition);
 
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setClearColor(0x000000, 0);
         // Set the size of the renderer to half the size of the window
         renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+        renderer.domElement.style.background = 'transparent';
+        renderer.domElement.style.display = 'block';
         containerRef.current.appendChild(renderer.domElement);
 
         // Allow the user to move the camera
@@ -175,7 +178,12 @@ const LorenzAttractor = ({
         }
     });
     return (
-        <div ref={containerRef} />
+        <div ref={containerRef} className="relative inline-block">
+            <div className="absolute top-2 right-2 z-10 pointer-events-none rounded bg-white/80 px-3 py-1 text-sm
+            text-gray-700 shadow-sm dark:bg-gray-900/80 dark:text-gray-200">
+                Click and drag on the canvas to move around
+            </div>
+        </div>
     );
 };
 

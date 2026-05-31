@@ -4,9 +4,9 @@ import { Accordion } from 'flowbite-react';
 
 const Dashboard = () => {
     const [simulationValues, setSimulationValues] = useState({
-        numAgents: 5,
+        numAgents: 10,
         sphereRadius: 0.5,
-        timeStep: 0.001,
+        timeStep: 0.0055,
         startRange: 1,
         linesOn: true,
     });
@@ -32,7 +32,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div>
+        <div className="min-h-screen bg-white dark:bg-gray-900">
             <Navbar />
 
             <h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-4xl
@@ -72,7 +72,7 @@ const Dashboard = () => {
                         `}
                     </style>
                 </div>
-                <div className="relative h-full w-1/4 absolute z-10 w-auto grid-cols-1 text-sm bg-white
+                <div className="relative h-full w-96 max-w-full z-10 grid-cols-1 text-sm bg-white
                 border border-gray-100 rounded-lg shadow-md dark:border-gray-700 md:grid-cols-2 dark:bg-gray-700">
                     <div className="p-6">
                         <h3 className="text-xl font-bold mb-4">Toolbar</h3>
