@@ -47,8 +47,8 @@ const ArticleView = ({ article }) => {
             <div className="flex justify-center items-center min-h-screen">
                 <div className="wrapper z-0 mt-32 xl:mt-0 flex flex-col justify-center max-w-[800px]
                     px-6">
-                    <h1 className="mb-8 mt-16 text-3xl font-extrabold leading-none tracking-normal text-gray-800
-                        md:text-4xl lg:text-4xl dark:text-white">
+                    <h1 className="mb-8 mt-16 text-center font-iowan text-3xl font-extrabold leading-none
+                        tracking-normal text-gray-800 md:text-4xl lg:text-4xl dark:text-white">
                         { article.title }
                     </h1>
 

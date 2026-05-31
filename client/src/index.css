@@ -5,6 +5,7 @@
 @layer components {
   .blog-body :where(p, li, blockquote, figcaption, td, th) {
     font-family: 'Iowan Old Style BT Web', 'Iowan Old Style', Georgia, Cambria, 'Times New Roman', Times, serif;
+    font-size: 17px;
   }
 }
 
